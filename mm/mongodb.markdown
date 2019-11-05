@@ -69,31 +69,35 @@ MongoDB တွင် Community version နှင့် Enterprise version ဟူ
 3. Binary folder ကို download ပြုလုပ်၍ ညွန်းဆိုအသုံးပြုခြင်း
 
 
-၎င်းတို့အနက် မိမိတို့ အသုံးပြုသည် OS သည် windows မဟုတ်ပါက Package Manager မှ install ပြုလုပ်ရန်အကြံပြုလိုသည်။ တကယ်လက်တွေ့တွင် deploy ပြုလုပ်သော server များတွင် ထိုနည်းများကိုအသုံးပြုရမည် ဖြစ်သည်။ ထိုအပြင် upgrade ပြုလုပ်သည့်တာဝန်များကိုလည်း package manager များမှ တာဝန်ယူထားသဖြင့် ပိုမိုလွယ်ကူပါသည်။ ထိုနောက် မိမိတို့ အသုံးပြုမည့် Operation System ပေါ်မူတည်၍ အောက်ဖော်ပြပါလင့်များ အတွင်းသွား၍ install ပြုလုပ်ကြပါ။ [Linux](https://docs.mongodb.com/manual/administration/install-on-linux/) [Windows](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/) [Mac](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+၎င်းတို့အနက် မိမိတို့ အသုံးပြုသည် OS သည် windows မဟုတ်ပါက Package Manager မှ install ပြုလုပ်ရန်အကြံပြုလိုသည်။ တကယ်လက်တွေ့တွင် deploy ပြုလုပ်သော server များတွင် ထိုနည်းများကိုအသုံးပြုရမည် ဖြစ်သည်။ ထိုအပြင် upgrade ပြုလုပ်သည့်တာဝန်များကိုလည်း package manager များမှ တာဝန်ယူထားသဖြင့် ပိုမိုလွယ်ကူပါသည်။ ထိုနောက် မိမိတို့ အသုံးပြုမည့် Operation System ပေါ်မူတည်၍ အောက်ဖော်ပြပါလင့်များ အတွင်းသွား၍ install ပြုလုပ်ကြပါ။ [(Linux) ](https://docs.mongodb.com/manual/administration/install-on-linux/) [(Windows) ](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/) [(Mac)](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
 
 `mongo` shell ကိုအသုံးပြုနိုင်ပါက အရင်ဆုံး `db.version()` ဟုရိုက်ထည့်ရင်းမိမိတို့အသုံးပြုသည့် database ၏ version ကိုကြည့်နိုင်ပါသည်။
 
 
-# Chapter 1 - The Basics #
-We begin our journey by getting to know the basic mechanics of working with MongoDB. Obviously this is core to understanding MongoDB, but it should also help us answer higher-level questions about where MongoDB fits.
+# အခန်း(၁) အခြေခံ #
 
-To get started, there are six simple concepts we need to understand.
+ပထမဆုံးခြေလှမ်းကိုတော့ MongoDB မည့်သိုအလုပ်လုပ်သနည်း ဆိုသည့် အခြေခံကိုပြောရင်းဖြင့် စပါမည်။ ၎င်းသည် MongoDB ကိုနားလည်ရာတွင် အဓိကအကျဆုံးအချက်ဖြစ်ပြီး MongoDB သည် မည်သို့သော အခြေအနေမျိုးနှင့် ကိုက်ညီသည် ဆိုသည့် မေးခွန်းများကို ဖြေရာတွင်လည်း အထောက်အကူပြုသည်။
 
-1. MongoDB has the same concept of a `database` with which you are likely already familiar (or a schema for you Oracle folks).  Within a MongoDB instance you can have zero or more databases, each acting as high-level containers for everything else.
+ရှေးဦးစွာ အချက် ၆ ခုကို နားလည်ထားရန်လိုသည်။
 
-2. A database can have zero or more `collections`. A collection shares enough in common with a traditional `table` that you can safely think of the two as the same thing.
+1. MongoDB သည် အခြားသော database များကဲ့သို့ `database` ဟုသော concept အပေါ်တွင် အခြေခံသည်။
 
-3. Collections are made up of zero or more `documents`. Again, a document can safely be thought of as a `row`.
+2. database တစ်ခုတွင် `collection` များပါရှိပြီး collection များသည် `table များနှင့်ဆင်၍ နှစ်ခုစလုံး အတူတူပဲဟု အစောပိုင်းမှတ်ယူနိုင်သည်။
 
-4. A document is made up of one or more `fields`, which you can probably guess are a lot like `columns`.
+3. Collection များသည် `document` များနှင့်ဖွဲ့စည်းထားပြီး ၎င်းတို့ကို `row` ကဲ့သို့ မှတ်ယူနိုင်သည်။
 
-5. `Indexes` in MongoDB function mostly like their RDBMS counterparts.
+4. document တစ်ခုတွင် `field` များပါဝင်ပြီး ၎င်းတို့သည် `column` သဘောတရားနှင့် ဆင်တူသည်။
 
-6. `Cursors` are different than the other five concepts but they are important enough, and often overlooked, that I think they are worthy of their own discussion.  The important thing to understand about cursors is that when you ask MongoDB for data, it returns a pointer to the result set called a cursor, which we can do things to, such as counting or skipping ahead, before actually pulling down data.
+5. MongoDB တွင်ရှိသည့် `Index` များ၏ သဘောသဘာဝသည် RDBMS များနှင့်ဆင်သည်။
 
-To recap, MongoDB is made up of `databases` which contain `collections`. A `collection` is made up of `documents`. Each `document` is made up of `fields`. `Collections` can be `indexed`, which improves lookup and sorting performance. Finally, when we get data from MongoDB we do so through a `cursor` whose actual execution is delayed until necessary.
+6. ၎င်းတွင်ပါရှိသော `Cursor` များသည် အခြား concept များနှင့်ကွဲပြားပြီး တခြားတရံချန်လှပ်ထားတက်သည်။ သို့သော် ၎င်းတို့ကို ဆွေးနွေးရန်ထိုက်တန်သည် ဟုမြင်ပါသည်။ အဓိကအချက်မှာ MongoDB မှ data ကိုလှမ်းယူလိုက်ပါက ပါသမျှ အကုန်ထုတ်ပေးသည်မဟုတ်ပဲ data များကို cursor ဟုခေါ်သည့် pointer တစ်ခုကို wrap လုပ်ပေးထားပြီ။ ၎င်းတို့ကို data တကယ်မဆွဲခင်ကတည်းက count ပြုလုပ်ရာတွင် ၎င်း ၊ ကျော်ရာတွင် ၎င်း အသုံးဝင်သည်။
 
-Why use new terminology (collection vs. table, document vs. row and field vs. column)? Is it just to make things more complicated? The truth is that while these concepts are similar to their relational database counterparts, they are not identical. The core difference comes from the fact that relational databases define `columns` at the `table` level whereas a document-oriented database defines its `fields` at the `document` level. That is to say that each `document` within a `collection` can have its own unique set of `fields`.  As such, a `collection` is a dumbed down container in comparison to a `table`, while a `document` has a lot more information than a `row`.
+အတိုချုပ်ပြောပါက MongoDB သည် `document` များပါဝင်သည့် `collection` များကိုစုစည်းထားသည့် `database` များနှင့်ဖွဲစည်းထားပြီး document တစ်ခုခြင်းစီတွင် `field` များပါဝင်သည်။ `collection` များကို 
+ရှာဖွေရာတွင်နှင့် စီရာတွင် ပိုမိုမြန်ဆန်ကောင်းမွန်စေရန် `index` ပြုလုပ်နိုင်သည်။ နောက်ဆုံးတွင် mongodb မှ data များကို တိုက်ရိုက်ရသည်မဟုတ်ပဲ လိုအပ်မှ ဆွဲထုတ်ပေးသည့် `cursor` များမှ တဆင့်ရရှိသည်။
+
+ဒါဆို ဘာလို့ စကားလုံးအသစ်တွေဖြစ်သည့် table အစား collection ၊ row အစား document ၊ column အစား field 
+ဟု သုံးရသနည်း။ ပိုရှုပ်အောင်လား ? အမှန်မှာ ၎င်း concept များသည် Relational Database များမှ concept များနှင့် ဆင်သော်လည်း ထပ်တူမဟုတ်ပေ။ အဓိက ကွဲပြားချက်မှာ relational database များတွင် `column` များကို `table` အဆင့်တွင်တွင် သတ်မှတ်ပေးရပြီး document အထူးပြု database များတွင် `field` များကို `document` အဆင့်တွင် သတ်မှတ်ပေးရသည်။ ထို့ကြောင့် `collection` တစ်ခုအတွင်းရှိ `document` တစ်ခုချင်းစီသည် အမျိုးအစားမတူညီသော `field` များရှိနိုင်သည်။ ထိုကြောင့် `collection` သည် `table` နှင့်နှိုင်းစာလျင် ပေါ့ပေါ့လျော့လျော့ရှိပြီး `document` တွင် `row` ထက် အချက်အလက်ပိုများနိုင်သည်။
+
 
 Although this is important to understand, don't worry if things aren't yet clear. It won't take more than a couple of inserts to see what this truly means. Ultimately, the point is that a collection isn't strict about what goes in it (it's schema-less). Fields are tracked with each individual document. The benefits and drawbacks of this will be explored in a future chapter.
 
