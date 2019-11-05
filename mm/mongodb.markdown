@@ -22,14 +22,14 @@ Karl သည် [The Little Redis Book](http://openmymind.net/2012/1/23/The-Littl
 
 သူ၏ blog ကို  <http://openmymind.net> တွင်တွေ့နိုင်ပြီး ၎င်း၏ twitter handle မှာ  [@karlseguin](http://twitter.com/karlseguin) ဖြစ်သည်။
 
-## With Thanks To ##
+## ကျေးဇူးတင်လွှာ ##
 
  သင်၏ မျက်လုံး စိတ်နှင့် ပြင်းထန်သော ဝါသနာများကို ငှားရမ်းမှုအတွက် [Perry Neal](http://twitter.com/perryneal) ကို အထူးပဲကျေးဇူးတင်ရှိရပါတယ်။ သင့်ရဲ့ကူညီမှုက တန်ဖိုးဖြတ်၍မရပါဘူး။ ကျေးဇူးပါ။
  
 
 <http://github.com/karlseguin/the-little-mongodb-book>.
 
-# Introduction #
+# နိဒါန်း #
 
  > အခန်းတွေ တိုတိုလေးဖြစ်တာ ကျွန်တော် အပြစ်မဟုတ်ပါဘူး။ MongoDB ကလေ့လာရ လွယ်လို့ပါ။
 
@@ -52,7 +52,7 @@ NoSQL solution ငါခုလောက်ဖြင့်သာ အသုံး�
 MongoDB သည် ၎င်းတို့အားလုံးကို ဖြေရှင်းနိုင်မလား ဟု တွေးကောင်းတွေးလိမ့်မည်။ document-oriented database တစ်ခု အနေဖြင့် MongoDB သည် အထွေထွေဆန်သည် NoSQL solution တစ်ခုဖြစ်သည်။ ၎င်းကို relational datbase များ၏ အစားထိုး ဟုမြင်နိင်သည်။ relational database များကဲ့သို့ပင် တခြား NoSQL solution များနှင့် တွဲဖက်အသုံးပြုနိုင်သည်။ MongoDB တွင်အားသာချက်ကော အားနည်းချက်ပါရှိပြီး ၎င်းတို့ကို စာအုပ်၏ အခြားသောအပိုင်းများတွင် ဖော်ပြသွားမည်။
 
 
-# Getting Started #
+# အစပျိုး #
 
 
 ဒီစာအုပ်၏ အများစုသည် MongoDB ၏ function များကို အာရုံစိုက်ထားမည်ဖြစ်၍ MongoDB Shell အပေါ်မှာ run မည်ဖြစ်သည်။ shell သည် administration ပြုလုပ်သည့် အပိုင်းများတွင် အသုးဝင်သည်ဖြစ်သော်လည်း သင့် Code မှာမူ MongoDB driver ကိုအသုံးပြုမည်ဖြစ်သည်။
