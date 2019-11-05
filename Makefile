@@ -14,13 +14,13 @@ EPUB_BUILDER_FLAGS = \
 MOBI_BUILDER = kindlegen
 
 
-en/mongodb.pdf:
-	cd en && $(PDF_BUILDER) $(PDF_BUILDER_FLAGS) $(SOURCE_FILE_NAME) -o $(BOOK_FILE_NAME).pdf
+mm/mongodb.pdf:
+	cd mm && $(PDF_BUILDER) $(PDF_BUILDER_FLAGS) $(SOURCE_FILE_NAME) -o $(BOOK_FILE_NAME).pdf
 
-en/mongodb.epub: en/title.png en/title.txt en/mongodb.markdown
+mm/mongodb.epub: mm/title.png mm/title.txt mm/mongodb.markdown
 	$(EPUB_BUILDER) $(EPUB_BUILDER_FLAGS) $^ -o $@
 
-en/mongodb.mobi: en/mongodb.epub
+mm/mongodb.mobi: mm/mongodb.epub
 	$(MOBI_BUILDER) $^
 
 clean:

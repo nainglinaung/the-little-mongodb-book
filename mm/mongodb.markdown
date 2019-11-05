@@ -1,43 +1,59 @@
 # About This Book #
 
 ## License ##
-The Little MongoDB Book book is licensed under the Attribution-NonCommercial 3.0 Unported license. **You should not have paid for this book.**
 
-You are basically free to copy, distribute, modify or display the book. However, I ask that you always attribute the book to me, Karl Seguin and do not use it for commercial purposes.
 
-You can see the full text of the license at:
+The Little MongoDB စာအုပ်သည်  Attribution-NonCommercial 3.0 Unported လိုင်စင် အောက်တွင် တည်ရှိသဖြင့် 
+**ထိုစာအုပ်အတွက် အခကြေးငွေ ပေးဆောင်ခြင်းမပြုရပါ။**
+
+ထိုစာအုပ်ကို အခမဲ့ ကူးယူ၊ မျှဝေ၊ ပြင်ဆင်၊ ပြသနိုင်သော်လည်း စာရေးသူဖြစ်သည့် မိမိ Karl Seguin ကို ပြန်လည်ညွန်းဆိုရမည်ဖြစ်ပြီး စီးပွားဖြစ်သုံးစွဲခွင့်မပြုပါ။ 
+
+
+ထိုလိုင်စင်၏ အရှည်ကောက်ကို အောက်ပါအတိုင်း ဖတ်ရှုနိုင်ပါသည်။
 
 <http://creativecommons.org/licenses/by-nc/3.0/legalcode>
 
-## About The Author ##
-Karl Seguin is a developer with experience across various fields and technologies. He's an expert .NET and Ruby developer.  He's a semi-active contributor to OSS projects, a technical writer and an occasional speaker. With respect to MongoDB, he was a core contributor to the C# MongoDB library NoRM, wrote the interactive tutorial [mongly](http://openmymind.net/mongly/) as well as the [Mongo Web Admin](https://github.com/karlseguin/Mongo-Web-Admin). His free service for casual game developers, [mogade.com](http://mogade.com/), is powered by MongoDB.
+## စာရေးသူ အကြောင်း ##
 
-Karl has since written [The Little Redis Book](http://openmymind.net/2012/1/23/The-Little-Redis-Book/)
 
-His blog can be found at <http://openmymind.net>, and he tweets via [@karlseguin](http://twitter.com/karlseguin)
+Karl Seguin သည် နည်းပညာနှင့်ပတ်သတ်သော ဘာသာရပ်များတွင် အတွေ့အကြုံများစွာရှိသည့် developer တစ်ဦးဖြစ်သည်။ ၎င်းသည် .Net နှင့် Ruby ကျွမ်းကျင်သော developer တစ်ဦးဖြစ်သည့် အပြင် OSS Projects များကို တစ်စိတ်တစ်ပိုင်း contributor တစ်ဦးဖြစ်သည့် အပြင် နည်းပညာအကြောင်း ဟောပြောသူ နှင့် စာရေးသူ တစ်ဦးလည်း ဖြစ်သည်။ MongoDB နှင့်ပတ်သတ်၍လည်း C# ၏ MongoDB library ဖြစ်သော NoRM ၏ အဓိက contributor တစ်ဦးဖြစ်ပြီး [mongly](http://openmymind.net/mongly/)  နှင့် [Mongo Web Admin](https://github.com/karlseguin/Mongo-Web-Admin) တို့နှင့်ပတ်သတ်သော tutorial များကိုလည်းလည်း တွင်ရေးသားပါသေးသည်။ ၎င်း၏ game developer များအတွက် အခမဲ့ service ကို [mogade.com](http://mogade.com/) တွင်တွေ့နိုင်ပြီး MongoDB ကိုအသုံးပြုထားသည်။
+
+Karl သည် [The Little Redis Book](http://openmymind.net/2012/1/23/The-Little-Redis-Book/) ကိုလည်းရေးသားခဲ့ပါသေးသည်။
+
+သူ၏ blog ကို  <http://openmymind.net> တွင်တွေ့နိုင်ပြီး ၎င်း၏ twitter handle မှာ  [@karlseguin](http://twitter.com/karlseguin) ဖြစ်သည်။
 
 ## With Thanks To ##
-A special thanks to [Perry Neal](http://twitter.com/perryneal) for lending me his eyes, mind and passion. You provided me with invaluable help. Thank you.
 
-## Latest Version ##
-This version was updated for MongoDB 2.6 by Asya Kamsky.  The latest source of this book is available at:
+ သင်၏ မျက်လုံး စိတ်နှင့် ပြင်းထန်သော ဝါသနာများကို ငှားရမ်းမှုအတွက် [Perry Neal](http://twitter.com/perryneal) ကို အထူးပဲကျေးဇူးတင်ရှိရပါတယ်။ သင့်ရဲ့ကူညီမှုက တန်ဖိုးဖြတ်၍မရပါဘူး။ ကျေးဇူးပါ။
+ 
 
 <http://github.com/karlseguin/the-little-mongodb-book>.
 
 # Introduction #
- > It's not my fault the chapters are short, MongoDB is just easy to learn.
 
-It is often said that technology moves at a blazing pace. It's true that there is an ever growing list of new technologies and techniques being released. However, I've long been of the opinion that the fundamental technologies used by programmers move at a rather slow pace. One could spend years learning little yet remain relevant. What is striking though is the speed at which established technologies get replaced. Seemingly overnight, long-established technologies find themselves threatened by shifts in developer focus.
+ > အခန်းတွေ တိုတိုလေးဖြစ်တာ ကျွန်တော် အပြစ်မဟုတ်ပါဘူး။ MongoDB ကလေ့လာရ လွယ်လို့ပါ။
 
-Nothing could be more representative of this sudden shift than the progress of NoSQL technologies against well-established relational databases. It almost seems like one day the web was being driven by a few RDBMSs, and the next, five or so NoSQL solutions had established themselves as worthy solutions.
+နည်းပညာတွေက အရွှေ့တွေက မြန်သည်ဟု ပြောကြသည်။ တနေ့တနေ့ နည်းပညာ အသစ်တွေနှင့် technique အသစ်တွေပေါ်လာသည်က မှန်သည်။ သို့သော်လည်း programmer တွေအသုံးပြုသော အခြေခံနည်းပညာများမှာမူ ဖြေးဖြေးချင်းစီသာ ပြောင်းလဲပါသည်။ တစ်နှစ်တစ်နှစ်တွင် အနည်းငယ်မျှသာ လေ့လာသောလည်း အလုပ်ဖြစ်နိုင်ပါသည်။ မြန်သည်ကတော့ နည်းပညာအဟောင်းများ နေရာတွင် အစားထိုးမည့် အသစ်များပါ။ တနေ့ထဲတွင် အချိန်ကြာမြင့်စွာတည်ဆောက်ထားသော နည်းပညာများ အသစ် deveoper များ၏ အပြောင်းအလဲကြောင့်ကို ကြောက်ရွံ့ရသည်။
 
-Even though these transitions seem to happen overnight, the reality is that they can take years to become accepted practice. The initial enthusiasm is driven by a relatively small set of developers and companies. Solutions are refined, lessons learned and seeing that a new technology is here to stay, others slowly try it for themselves. Again, this is particularly true in the case of NoSQL where many solutions aren't replacements for more traditional storage solutions, but rather address a specific need in addition to what one might get from traditional offerings.
 
-Having said all of that, the first thing we ought to do is explain what is meant by NoSQL. It's a broad term that means different things to different people. Personally, I use it very broadly to mean a system that plays a part in the storage of data. Put another way, NoSQL (again, for me), is the belief that your persistence layer isn't necessarily the responsibility of a single system. Where relational database vendors have historically tried to position their software as a one-size-fits-all solution, NoSQL leans towards smaller units of responsibility where the best tool for a given job can be leveraged. So, your NoSQL stack might still leverage a relational database, say MySQL, but it'll also contain Redis as a persistence lookup for specific parts of the system as well as Hadoop for your intensive data processing. Put simply, NoSQL is about being open and aware of alternative, existing and additional patterns and tools for managing your data.
+နဂိုအသားကျနေသော relational database များမှ NoSQL နည်းပညာများသို့ ရုတ်တရွက်အရွေ့သည် ၎င်းကို ဖော်ပြနိုင်သော အကောင်းဆုံး ဥပမာဖြစ်သည်။ တနေ့တွင် web တစ်ခုလုံးသည် relational database များနှင့်
+NoSQL solution ငါခုလောက်ဖြင့်သာ အသုံးပြုကြတော့မည် ဟုထင်ခဲ့ကြသည်။
 
-You might be wondering where MongoDB fits into all of this. As a document-oriented database, MongoDB is a more generalized NoSQL solution. It should be viewed as an alternative to relational databases. Like relational databases, it too can benefit from being paired with some of the more specialized NoSQL solutions. MongoDB has advantages and drawbacks, which we'll cover in later parts of this book.
+
+၎င်း အပြောင်းအလဲများသည် နေ့ချင်းရက်ချင်းဖြစ်သော်လည်း တကယ်လက်တွေ့တွင် ထိုနည်းပညာများသည် တကယ့်လက်တွေ့တွင် သုံးနိုင်သည့် အခြေအနေရောက်အောင် နှစ်ပေါင်းများစွာကြာမြင့်ခဲ့သည်။ အစောပိုင်းတွင် developer အနည်းငယ်မျှသည် စိတ်အားထက်သန်မှုဖြင့် မောင်းနှင်ခဲ့ပြီး ပို၍ အဆင်ပြေလာသည်နှင့်အမျှ သင်ခန်းစာများရက နည်းပညာအသစ်၏ နေရာကိုရှာတွေ့ခဲ့ပြီး အခြားသူများမှာ တဖြည်းဖြည်း ၎င်းတို့အတွက် စမ်းကြည့်လာကြသည်။ ထပ်၍ ထုံးတမ်းစဉ်လာ storage solution များအနေဖြင့် အစားထိုး၍မရသော် နေရာများအတွက် NoSQL ၏ အနေအထားသည် မှန်သည်ဟုဆိုရမည်ဖြစ်ပြီး ထုံးတမ်းစဉ်လာ feature များထက် ဘယ်အချက်တွေ ပိုလာမလဲကိုသာ အဓိကပြောရမည်ဖြစ်သည်။ 
+
+
+အပေါ်မှအတိုင်း ဆိုခဲ့ပြီးပါနောက် NoSQL ဆိုသည်မှာ ဘာလဲဆိုတာ ရှင်းပြရန်လိုမည်။ ၎င်းသည် ကွဲပြားသောသူများအတွက် ကွဲပြားသော အဓိပ္ပါယ်ဖွဲ့ဆိုချက်များ ဖြစ်သည်။ ကျွန်တော်အနေဖြင့်မူ data များ၏ သိမ်းဆည်းပုံနှင့် ပတ်သတ်၍ အဓိကကျသော နေရာတစ်ခုအဖြစ်ပါဝင်သော စနစ်တစ်ခုဟု အကြမ်းဖြင်းမှတ်ယူထားသည်။ တနည်းအားဖြင့် NoSQL သည် (ကျွန်တော်အတွက်) ခိုင်လုံသော စနစ်တစ်ခုသည် စက်တစ်လုံးထဲပေါ်တွင် မမူတည်နေသော ယုံကြည်ချက်ဖြစ်သည်။ 
+
+ပုံမှန် relational database များ၏ ထုတ်လုပ်သူများသည် တောက်လျှောက် software တစ်ခုကို အားလုံးစုပြုံထားသော solution တစ်ခုအနေဖြင့် ပုံသွင်းရန်ကြိုးစားခဲ့သော်လည်း NoSQL အတွက်မူ သေးငယ်သော units များမှ တာဝန်အသီးသီးခွဲယူပြီး အကောင်းဆုံး tool များကို အသုံးပြု၍ တာဝန်တစ်ခုစီကို ထမ်းယူနိုင်ရန် ရည်ရွယ်သည်။
+ထိုကြောင့် NoSQL stack တစ်ခုတွင် relational database နှင့်တွဲဖက်၍အသုံးပြုခြင်း ဆိုပါစို့  MySQL ကိုအသုံးပြုပေမယ့် Redis ကို စနစ်၏ အစိတ်အပိုင်းတချို့တွင် အသုံးပြုခြင်းနှင့် အကြီးအကျယ် data process ပြုလုပ်ပါက Haddop ကိုအသုံးပြုခြင်းကဲ့သို့ပင် ရိုးရှင်းစွာပြောပါက NoSQL သည် အခြားအစားထိုးတစ်ခုအတွက်ကို 
+ဖွင့်လှစ်ထားခြင်း ၊ ရှိပြီးသား နှင့် pattern များနှင့် tool များကိုအသုံးပြု၍ data များကို ကွပ်ကဲခြင်းဖြစ်သည်။
+
+MongoDB သည် ၎င်းတို့အားလုံးကို ဖြေရှင်းနိုင်မလား ဟု တွေးကောင်းတွေးလိမ့်မည်။ document-oriented database တစ်ခု အနေဖြင့် MongoDB သည် အထွေထွေဆန်သည် NoSQL solution တစ်ခုဖြစ်သည်။ ၎င်းကို relational datbase များ၏ အစားထိုး ဟုမြင်နိင်သည်။ relational database များကဲ့သို့ပင် တခြား NoSQL solution များနှင့် တွဲဖက်အသုံးပြုနိုင်သည်။ MongoDB တွင်အားသာချက်ကော အားနည်းချက်ပါရှိပြီး ၎င်းတို့ကို စာအုပ်၏ အခြားသောအပိုင်းများတွင် ဖော်ပြသွားမည်။
+
 
 # Getting Started #
+
 Most of this book will focus on core MongoDB functionality. We'll therefore rely on the MongoDB shell. While the shell is useful to learn as well as being a useful administrative tool, your code will use a MongoDB driver.
 
 This does bring up the first thing you should know about MongoDB: its drivers. MongoDB has a [number of official drivers](http://docs.mongodb.org/ecosystem/drivers/) for various languages. These drivers can be thought of as the various database drivers you are probably already familiar with. On top of these drivers, the development community has built more language/framework-specific libraries. For example, [NoRM](https://github.com/atheken/NoRM) is a C# library which implements LINQ, and [MongoMapper](https://github.com/jnunemaker/mongomapper) is a Ruby library which is ActiveRecord-friendly. Whether you choose to program directly against the core MongoDB drivers or some higher-level library is up to you. I point this out only because many people new to MongoDB are confused as to why there are both official drivers and community libraries - the former generally focuses on core communication/connectivity with MongoDB and the latter with more language and framework-specific implementations.
