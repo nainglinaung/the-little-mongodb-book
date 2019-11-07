@@ -98,45 +98,50 @@ MongoDB တွင် Community version နှင့် Enterprise version ဟူ
 ဒါဆို ဘာလို့ စကားလုံးအသစ်တွေဖြစ်သည့် table အစား collection ၊ row အစား document ၊ column အစား field 
 ဟု သုံးရသနည်း။ ပိုရှုပ်အောင်လား ? အမှန်မှာ ၎င်း concept များသည် Relational Database များမှ concept များနှင့် ဆင်သော်လည်း ထပ်တူမဟုတ်ပေ။ အဓိက ကွဲပြားချက်မှာ relational database များတွင် `column` များကို `table` အဆင့်တွင်တွင် သတ်မှတ်ပေးရပြီး document အထူးပြု database များတွင် `field` များကို `document` အဆင့်တွင် သတ်မှတ်ပေးရသည်။ ထို့ကြောင့် `collection` တစ်ခုအတွင်းရှိ `document` တစ်ခုချင်းစီသည် အမျိုးအစားမတူညီသော `field` များရှိနိုင်သည်။ ထိုကြောင့် `collection` သည် `table` နှင့်နှိုင်းစာလျင် ပေါ့ပေါ့လျော့လျော့ရှိပြီး `document` တွင် `row` ထက် အချက်အလက်ပိုများနိုင်သည်။
 
+၎င်းကို နားလည်ရန် အရေးကြီးသော်လည် အခုလက်ရှိတွင် သိပ်မရှင်းသေးပါက ပြဿနာမရှိပါ။ ၎င်းကို နားလည်ရန် data အထည့်အသွင်း အကြိမ် အနည်းငယ် ပြုလုပ်ပါက နားလည်သွားပါလိမ့်မည်။ အထူးသတိပြုရန်မှာ collection များသည် မည်သည့် အချက်အလက်အမျိုးအစား ထည့်သွင်းထားသည်ကို restrict ပြုလုပ်မည် မဟုတ်ပါ။ (schema-less ဖြစ်သော်ကြောင့်) ၎င်း၏ အားသာချက်နှင့် အားနည်းချက်ကို နောက်အခန်းများတွင် ရှင်းပြသွားပါမည်။
 
-Although this is important to understand, don't worry if things aren't yet clear. It won't take more than a couple of inserts to see what this truly means. Ultimately, the point is that a collection isn't strict about what goes in it (it's schema-less). Fields are tracked with each individual document. The benefits and drawbacks of this will be explored in a future chapter.
+စကြရအောင်။ သင့်အနေနဲ့ ဘာမှ မ run ရသေးပါက `mongod` ဆိုပြီး server ကိုစတင်လိုက်ပြီး mongo shell ထဲဝင်လိုက်ပါ။ ထို shell သည် Javascript ဖြင့် run ပြီး global command များဖြစ်သည့် `help` တို့ `exit` တို့ကိုလည်း အသုံးပြုနိုင်သည်။ လက်ရှိ database တစ်ခုလုံးစာ အရာများကို manageလုပ်ရန် `db` object အတွင်းရှိ command များပါရှိသည်။ (ဥပမာ `db.help()`၊ `db.stats()`) သို့မဟုတ် လက်ရှိ collection တစ်ခုစာ အရာများကို execute လုပ်ရန်မူ  `db.COLLECTION_NAME`  ဟု object များပါရှိသည်။ (ဥပမာ `db.unicorns.help()`၊ `db.unicorns.count()`)
 
-Let's get hands-on. If you don't have it running already, go ahead and start the `mongod` server as well as a mongo shell. The shell runs JavaScript. There are some global commands you can execute, like `help` or `exit`. Commands that you execute against the current database are executed against the `db` object, such as `db.help()` or `db.stats()`. Commands that you execute against a specific collection, which is what we'll be doing a lot of, are executed against the `db.COLLECTION_NAME` object, such as `db.unicorns.help()` or `db.unicorns.count()`.
+`db.help()` ဟု ရိုက်ပြီးရှာကြည့်ပါ။ သင့်အနေဖြင့် `db` object အတွင်းတွင် execute ပြုလုပ်နိုင်သော commands list ကျလာပါလိမ့်မည်။
 
-Go ahead and enter `db.help()`, you'll get a list of commands that you can execute against the `db` object.
+မှတ်သားရန် တစ်ခုမှာ Javascript Shell ဖြစ်တာကြောင့် method တစ်ခုကိုရိုက်ထည့်ရာတွင် parenthese ဖြစ်သည့် `()` ကို ဖြုတ်ပြီး ရိုက်ထည့်ကြည့်ပါက method ကိုခေါ်မည့် အစား method body ကိုတွေ့ရမည်ဖြစ်သည်။ ပြောရသည်မှာ သင့်အနေဖြင့် ပထမဆုံး response တစ်ခုမှာ `function (...){` ဟုပုံစံဖြင့် လာပါက အရမ်း မအံဩရန်ဖြစ်သည်။ ဥပမာ `db.help` ဟုရိုက်ထည့်ပါက `help` method ၏ internal implementation ကိုတွေ့ရမည်ဖြစ်သည်။ 
 
-A small side note: Because this is a JavaScript shell, if you execute a method and omit the parentheses `()`, you'll see the method body rather than executing the method. I only mention it so that the first time you do it and get a response that starts with `function (...){` you won't be surprised. For example, if you enter `db.help` (without the parentheses), you'll see the internal implementation of the `help` method.
+ပထမဦးစွာ `use` ဆိုသည့် global helper ကိုသုံး၍ database များကို switch ပြုလုပ်နိုင်သည်။ ထိုကြောင့် `use learn` ဆိုပြီးရိုက်လိုက်ပါ။ database မရှိသေးလည်း ကိစ္စမရှိပါ။ ပထမဆုံး collection ကိုတည်ဆောက်လိုက်ပါက `learn` database ပါ တခါတည်း ဆောက်သွားမည်ဖြစ်သည်။ အခု database ၏ အတွင်းထဲကိုရောက်သွားပြီ ဖြစ်၍ database command များဖြစ်သည့် `db.getCollectionNames()` ကိုသုံးနိုင်မည်ဖြစ်သည်။ အခုရိုက်ကြည့်ပါက array အလွတ် (`[ ]`) ကိုသာတွေ့မည်ဖြစ်သည်။ collection များမှာ schema မရှိသဖြင့် တကူးတက ဆောက်ရန်မလိုပေ။ document ကို insert လုပ်လိုက်ပါက collection ဖြစ်ပေါ်လာမည်ဖြစ်သည်။ ထိုသို့ပြုလုပ်ရန် `insert` command ကိုအသုံးပြုရမည်ဖြစ်ပြီး document ကို အောက်ပါအတိုင်း insert ပြုလုပ်လိုက်ပါ။
 
-First we'll use the global `use` helper to switch databases, so go ahead and enter `use learn`. It doesn't matter that the database doesn't really exist yet. The first collection that we create will also create the actual `learn` database. Now that you are inside a database, you can start issuing database commands, like `db.getCollectionNames()`. If you do so, you should get an empty array (`[ ]`). Since collections are schema-less, we don't explicitly need to create them. We can simply insert a document into a new collection. To do so, use the `insert` command, supplying it with the document to insert:
 
 	db.unicorns.insert({name: 'Aurora',
 		gender: 'f', weight: 450})
 
-The above line is executing `insert` against the `unicorns` collection, passing it a single parameter. Internally MongoDB uses a binary serialized JSON format called BSON. Externally, this means that we use JSON a lot, as is the case with our parameters. If we execute `db.getCollectionNames()` now, we'll see a `unicorns` collection.
 
-You can now use the `find` command against `unicorns` to return a list of documents:
+parameter အနေဖြင့် pass ပြီး `unicorns` collection ကို `insert` ပြုလုပ်မည်ဖြစ်သည်။ MongoDB ၏ အတွင်းပိုင်းတွင် BSON ဟုခေါ်သည့် Binary serialized JSON format ကိုအသုံးပြုပြီး ထိုကြောင့် အပြင်ပိုင်းတွင် JSON ကို အဓိကအသုံးပြုသည်ကို ပြော၍ရပြီး ကျွန်တော်တို့ လက်ရှိဥပမာတွင် မြင်တွေ့နိုင်သည်။ အကယ်၍ ဒီတစ်ခါ `db.getCollectionNames()` ရိုက်ကြည့်ပါက `unicorns` ကိုမြင်တွေ့ရမည်ဖြစ်သည်။
+
+ယခု `unicorns` အတွင်းရှိ document များကို `find` ကိုအသုံးပြု၍ ရှာဖွေနိုင်ပါပြီ။
 
 	db.unicorns.find()
 
-Notice that, in addition to the data you specified, there's an `_id` field. Every document must have a unique `_id` field. You can either generate one yourself or let MongoDB generate a value for you which has the type `ObjectId`. Most of the time you'll probably want to let MongoDB generate it for you. By default, the `_id` field is indexed. You can verify this through the  `getIndexes` command:
+သတိထားမိမည်မှာ မိမိတို့ထည့်ထားသည့် data များအပြင် `_id` ဟုသည့် field တစ်ခု အပိုပါနေသည်ကိုတွေ့ရမည်။ document တိုင်းတွင် သီးသန့် `_id` field ပါရှိသည်။ သင့်အနေဖြင့် ကိုယ်ဖာသာကိုယ် generate ပြုလုပ်နိုင်သလို
+MongoDB မှ generate ပြုလုပ်ထားသည့် `ObjectId` ကိုလည်း အသုံးပြုနိုင်သည်။ အခြေအနေတော်တော်များများတွင် 
+`ObjectId` ကိုအသုံးပြုဖို့များပါသည်။ default အနေဖြင့် `_id` သည် index ပြုလုပ်ထားသည်။ ၎င်းကို `getIndexes` command ကိုအသုံးပြု၍ သိရှိနိုင်သည်။
 
 	db.unicorns.getIndexes()
 
-What you're seeing is the name of the index, the database and collection it was created against and the fields included in the index.
+index ၏ အမည်ကိုတွေ့ပါက database နှင့် collection နှင့် field တို့ပါ ထို index အတွင်းတွင် ပါရှိသည်ကို သတိထားမိမည်ဖြစ်သည်။
 
-Now, back to our discussion about schema-less collections. Insert a totally different document into `unicorns`, such as:
+အခု ဆက်၍ schema-less collection အကြောင်း ဆွေးနွေးကြပါစို့။ `unicorns` အတွင်းသို့ လုံးဝမတူညီသည့် document တစ်ခုကို insert ပြုလုပ်ကြည့်ကြပါ။
 
 	db.unicorns.insert({name: 'Leto',
 		gender: 'm',
 		home: 'Arrakeen',
 		worm: false})
 
-And, again use `find` to list the documents. Once we know a bit more, we'll discuss this interesting behavior of MongoDB, but hopefully you are starting to understand why the more traditional terminology wasn't a good fit.
+
+ထိုနောက် `find` ကိုအသုံးပြု၍ document များကို list လုပ်ပါ။ ထပ်၍လေ့လာပြီးပါက MongoDB ၏ စိတ်ဝင်စားစရာ သဘောတရားကို ဆွေးနွေးပါမယ်။ သို့သော် ယခု မြင်သာလာမည်က သမာရိုးကျ အသုံးအနှုန်းများသည် ၎င်းနှင့် မကိုက်ဆိုသည့် အချက်ကို။
 
 ## Mastering Selectors ##
-In addition to the six concepts we've explored, there's one practical aspect of MongoDB you need to have a good grasp of before moving to more advanced topics: query selectors. A MongoDB query selector is like the `where` clause of an SQL statement. As such, you use it when finding, counting, updating and removing documents from collections. A selector is a JSON object, the simplest of which is `{}` which matches all documents. If we wanted to find all female unicorns, we could use `{gender:'f'}`.
 
-Before delving too deeply into selectors, let's set up some data to play with. First, remove what we've put so far in the `unicorns` collection via: `db.unicorns.remove({})`. Now, issue the following inserts to get some data we can play with (I suggest you copy and paste this):
+အပေါ်မှ အချက် ခြောက်ချက်ကို စူးစမ်းနေရင်း အဆင့်မြင့်တန်း ကို ဆက်၍မလေ့လာမီ MongoDB ၏ လက်တွေ့ကျသည့် အချက် တနည်းအားဖြင့် query selectors များအကြောင်းကို နားလည်ထားရန်လိုသည်။  collection မှ ရှာသောခါ ၊ ရေတွက်သောအခါ ၊ ပြင်ဆင်သောအခါ နှင့် ဖျက်သောအခါများတွင် MongoDB ၏ query selector သည် SQL ၏ `where` statement များဖြင့် ခပ်ဆင်ဆင်ပင်ဖြစ်သည်။ JSON object သည် selector ဖြစ်ပြီး အရိုးရှင်းဆုံး ပုံစံသည် `{}` ဖြစ်ပြီး ၎င်းသည် document အကုန်လုံးဖြင့် match ဖြစ်မည်ဖြစ်သည်။ အကယ့်၍ female unicorns များကိုသာရှာလိုပါက `{gender:'f'}` ဟု အသုံးပြုနိုင်သည်။
+
+selector များအကြောင်း ထဲထဲဝင်ဝင် မဆင်းခင် data များထည့်ပြီး စမ်းသပ်ကြည့်ကြရအောင်။ ပထမဆုံး unicorns တွင်ရှိပြီးသာ collection ကို `db.unicorns.remove({})` ရိုက်ပြီး ရှင်းလင်းလိုက်ပါ။ ထိုနောက် အောက်ကအတိုင်း ( copy paste လုပ်ရန် အားပေးပါသည်) ရိုက်ထည်းလိုက်ပါ။ 
 
 	db.unicorns.insert({name: 'Horny',
 		dob: new Date(1992,2,13,7,47),
