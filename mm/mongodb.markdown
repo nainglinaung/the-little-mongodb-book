@@ -141,7 +141,7 @@ index ၏ အမည်ကိုတွေ့ပါက database နှင့် co
 
 အပေါ်မှ အချက် ခြောက်ချက်ကို စူးစမ်းနေရင်း အဆင့်မြင့်တန်း ကို ဆက်၍မလေ့လာမီ MongoDB ၏ လက်တွေ့ကျသည့် အချက် တနည်းအားဖြင့် query selectors များအကြောင်းကို နားလည်ထားရန်လိုသည်။  collection မှ ရှာသောခါ ၊ ရေတွက်သောအခါ ၊ ပြင်ဆင်သောအခါ နှင့် ဖျက်သောအခါများတွင် MongoDB ၏ query selector သည် SQL ၏ `where` statement များဖြင့် ခပ်ဆင်ဆင်ပင်ဖြစ်သည်။ JSON object သည် selector ဖြစ်ပြီး အရိုးရှင်းဆုံး ပုံစံသည် `{}` ဖြစ်ပြီး ၎င်းသည် document အကုန်လုံးဖြင့် match ဖြစ်မည်ဖြစ်သည်။ အကယ့်၍ female unicorns များကိုသာရှာလိုပါက `{gender:'f'}` ဟု အသုံးပြုနိုင်သည်။
 
-selector များအကြောင်း ထဲထဲဝင်ဝင် မဆင်းခင် data များထည့်ပြီး စမ်းသပ်ကြည့်ကြရအောင်။ ပထမဆုံး unicorns တွင်ရှိပြီးသာ collection ကို `db.unicorns.remove({})` ရိုက်ပြီး ရှင်းလင်းလိုက်ပါ။ ထိုနောက် အောက်ကအတိုင်း ( copy paste လုပ်ရန် အားပေးပါသည်) ရိုက်ထည်းလိုက်ပါ။ 
+selector များအကြောင်း ထဲထဲဝင်ဝင် မဆင်းခင် data များထည့်ပြီး စမ်းသပ်ကြည့်ကြရအောင်။ ပထမဆုံး unicorns တွင်ရှိပြီးသား collection ကို `db.unicorns.remove({})` ရိုက်ပြီး ရှင်းလင်းလိုက်ပါ။ ထိုနောက် အောက်ကအတိုင်း ( copy paste လုပ်ရန် အားပေးပါသည်) ရိုက်ထည်းလိုက်ပါ။ 
 
 	db.unicorns.insert({name: 'Horny',
 		dob: new Date(1992,2,13,7,47),
@@ -216,7 +216,8 @@ selector များအကြောင်း ထဲထဲဝင်ဝင် မ
 		gender: 'm',
 		vampires: 165});
 
-Now that we have data, we can master selectors. `{field: value}` is used to find any documents where `field` is equal to `value`. `{field1: value1, field2: value2}` is how we do an `and` statement. The special `$lt`, `$lte`, `$gt`, `$gte` and `$ne` are used for less than, less than or equal, greater than, greater than or equal and not equal operations. For example, to get all male unicorns that weigh more than 700 pounds, we could do:
+
+အခု data တွေရှိသွားပြီဆိုတော့ selector ကိုစမ်းလို့ရပါပြီ။  `{field: value}` ပုံစံဖြင့် ရှာရမည်ဖြစ်ပြီး `field` သည် `value` နှင့်ညီသည့်အရာများကိုရှာပေးမည်ဖြစ်သည်။  `{field1: value1, field2: value2}` ပုံစံသည် `and` statment နှင့်သွားတူမည်ဖြစ်သည်။ အထူး operator များဖြစ်သော `$lt`၊ `$lte`၊ `$gt`၊ `$gte` နှင့် `$ne` တို့သည်  ငယ်သော ၊ ငယ်သည်နှင့်တူသည်နှစ်ခုထဲမှ တစ်ခုကိုက်ညီသော ၊ ကြီးသော ၊ ကြီးသည်နှင့် တူသည် နှစ်ခုထဲမှ ကိုက်ညီသော နှင့် မတူညီသော အရာများကိုရှာဖွေရန်အသုံးပြုနိုင်သည်။ ဥပမာ unicorn များအနက်မှာ male ဖြစ်ပြီး weight ပေါင် ၇၀၀ ထက်ကျော်သည်ကိုရှာလိုပါက အောက်ပါအတိုင်း
 
 	db.unicorns.find({gender: 'm',
 		weight: {$gt: 700}})
@@ -225,40 +226,40 @@ Now that we have data, we can master selectors. `{field: value}` is used to find
 	db.unicorns.find({gender: {$ne: 'f'},
 		weight: {$gte: 701}})
 
-
-The `$exists` operator is used for matching the presence or absence of a field, for example:
+`$exists` operator သည် field တစ်ခုရှိမရှိကို ဆန်းစစ်ရာတွင် အသုံးပြုနိုင်သည်။ ဥပမာ
 
 	db.unicorns.find({
 		vampires: {$exists: false}})
 
-should return a single document. The '$in' operator is used for matching one of several values that we pass as an array, for example:
+သည် document တစ်ခုသာပြန်လိမ့်မည်ဖြစ်သည်။ '$in' သည value များစွာပါဝင်သော array တစ်ခုထဲတွင် မိမိတို့အလို့ရှိသည့် value များပါသည့် array များနှင့် ကိုက်ညီခြင်းရှိမရှိ တိုက်စစ်ရာတွင် အသုံးပြုနိုင်သည်။
 
     db.unicorns.find({
     	loves: {$in:['apple','orange']}})
 
-This returns any unicorn who loves 'apple' or 'orange'.
+၎င်းသည် apple နှင့် orange ဖြစ်ဖြစ် ကြိုက်နှစ်သက်သော unicorn များ return ပြန်လိမ့်မည်။
 
-If we want to OR rather than AND several conditions on different fields, we use the `$or` operator and assign to it an array of selectors we want or'd:
+field များကိုစစ်ရာတွင် AND အစား OR operator ကိုအသုံးပြုလိုပါက `$or` ကိုအသုံးပြုနိုင်ပြီး selector  array ကို pass ပြုလုပ်နိုင်သလို အောက်ပါအတိုင်းလည်း အသုံးပြုနိုင်သည်။
 
 	db.unicorns.find({gender: 'f',
 		$or: [{loves: 'apple'},
 			  {weight: {$lt: 500}}]})
 
-The above will return all female unicorns which either love apples or weigh less than 500 pounds.
+အပေါ်မှ အတိုင်းရေးပါက ပေါင် 500 အောက်ဖြစ်သည်ဖြစ်စေ ၊ apple ကိုနှစ်သက်သော female unicorn များကိုထုတ်ပေးမည်ဖြစ်သည်။ 
 
-There's something pretty neat going on in our last two examples. You might have already noticed, but the `loves` field is an array. MongoDB supports arrays as first class objects. This is an incredibly handy feature. Once you start using it, you wonder how you ever lived without it. What's more interesting is how easy selecting based on an array value is: `{loves: 'watermelon'}` will return any document where `watermelon` is a value of `loves`.
+အပေါ်မှ ဥပမာနှစ်ခုတွင် သတိထားစရာအချက် ၂ ခုရှိသည်။ ပထမတစ်ခုမှာ `loves` ဆိုသော field သည် array ဖြစ်သည်။ MongoDB သည် array များကို first class object အနေဖြင့် အသိအမှတ်ပြုသည်။ ၎င်းသည်အလွန်အသုံးဝင်သော feature ဖြစ်ပြီး ရင်းနှီးသွားပါက ၎င်းမပါပဲ မသုံးတက်တော့ချေ။ ပို၍ စိတ်ဝင်စားစရာကောင်းသည်က array ၏ value ကို ရွေးချယ်ရာတွင် လွယ်ကူခြင်းဖြစ်ပြီး `{loves: 'watermelon'}` ဟုအသုံးပြုပါက `loves` ၏ တန်ဖိုး `watermelon` ဖြစ်သောအရာများပါလာမည်ဖြစ်သည်။
 
-There are more available operators than what we've seen so far. These are all described in the [Query Selectors](http://docs.mongodb.org/manual/reference/operator/query/#query-selectors) section of the MongoDB manual. What we've covered so far though is the basics you'll need to get started. It's also what you'll end up using most of the time.
+ယခု မြင်နေကြများအပြင် အခြား သုံးနိုင်သည့် operator များလည်းရှိပါသေးသည်။ ၎င်းတို့ကို MongoDB Manual ၏  [Query Selectors](http://docs.mongodb.org/manual/reference/operator/query/#query-selectors) section တွင်ဖတ်နိုင်သည်။ ယခုဖော်ပြခဲ့သော အရာများအခြေခံဖြစ်ပြီး ၎င်းတို့ကို အများစုအနေဖြင့် အသုံးပြုရမည်ဖြစ်သည်။
 
-We've seen how these selectors can be used with the `find` command. They can also be used with the `remove` command which we've briefly looked at, the `count` command, which we haven't looked at but you can probably figure out, and the `update` command which we'll spend more time with later on.
+`find` command ကိုအသုံးပြု၍ selector များကိုအသုံးပြုသည်ကိုတွေ့ပြီးပြီဖြစ်သည်။ ၎င်းတို့ကိုလည်း ကျွန်တော်တိ့ တစ်ခေါက်အသုံးပြုဖူးသည့် `remove` command ဖြင့်လည်းတွဲဖက်အသုံးပြုနိုင်သလို `count` ဖြင့်လည်းသုံးနိုင်သည်။ ထိုနောက် `update` command ကို အချိန်တစ်ခုပေး၍ ရှင်းပြပါမည်။
 
-The `ObjectId` which MongoDB generated for our `_id` field can be selected like so:
+MongoDB မှ `_id` field အတွက် generate ပြုလုပ်ပေးသော `ObjectId` ကိုအောက်ပါအတိုင်းမြင်တွေ့နိုင်သည်။
 
 	db.unicorns.find(
 		{_id: ObjectId("TheObjectId")})
 
-## In This Chapter ##
-We haven't looked at the `update` command yet, or some of the fancier things we can do with `find`. However, we did get MongoDB up and running, looked briefly at the `insert` and `remove` commands (there isn't much more than what we've seen). We also introduced `find` and saw what MongoDB `selectors` were all about. We've had a good start and laid a solid foundation for things to come. Believe it or not, you actually know most of what you need to know to get started with MongoDB - it really is meant to be quick to learn and easy to use. I strongly urge you to play with your local copy before moving on. Insert different documents, possibly in new collections, and get familiar with different selectors. Use `find`, `count` and `remove`. After a few tries on your own, things that might have seemed awkward at first will hopefully fall into place.
+## နောက်တစ်ခန်းမဖတ်ခင် ##
+
+`update` command ကိုမကြည့်ရသေးသလို `find` ဖြင့်ပြုလုပ်၍ရသော အချို့သော မိုက်သည့် အရာများမစမ်းကြည့်ရသေးသော်လည်း MongoDB ကို install ပြုလုပ်ပြီး run ခြင်း၊ `insert` နှင့် `remove` ပြုလုပ်ခြင်းတို့ကို လုပ်ဆောင်ပြီးဖြစ်သည်။ ထိုနောက် `find` အကြောင်းနှင့် MongoDB မှ `selector` အကြောင်းကို မိတ်ဆက်ပေးခဲ့ပြီးဖြစ်သည်။ သင်ယုံချင်မှယုံမည်ဖြစ်သော်လည်း ယခုအခြေအနေလောက်ဖြင့် MongoDB နှင့်ပတ်သတ်သော အခြေခံတော်တော်များများကို သင်သိရှိပြီးဖြစ်သည်။ ထိုမျှပင် သင်ရလွယ်ကူသလို အသုံးပြုရလွယ်ကူသည်။ သို့သော် နောက်အဆင့်များမတိုင်ခင် local မှာပင် အကြိမ်ကြိမ်စမ်းသပ်ရန် အကြံပြုလိုသည်။ မတူညီသော documents များ insert ပြုလုပ်ခြင်း၊ collection အသစ်များဖန်တီးခြင်း၊ နှင့် selector များကိုရင်းနှီးအောင် လေ့လာထားသင့်သည်။ ကိုယ့်ဖာသာကိုယ် `find` ၊ `count` နှင့် `remove` များအသုံးပြုပြီး အကြိမ်ကြိမ်စမ်းသပ်ပါက တဖြည်းဖြည်းရင်းနှီးလာပြီး အသားကျလာပါလိမ့်မည်။
 
 # Chapter 2 - Updating #
 In chapter 1 we introduced three of the four CRUD (create, read, update and delete) operations. This chapter is dedicated to the one we skipped over: `update`. `Update` has a few surprising behaviors, which is why we dedicate a chapter to it.
