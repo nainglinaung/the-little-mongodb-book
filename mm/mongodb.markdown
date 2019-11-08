@@ -259,24 +259,27 @@ MongoDB မှ `_id` field အတွက် generate ပြုလုပ်ပေ�
 
 ## နောက်တစ်ခန်းမဖတ်ခင် ##
 
-`update` command ကိုမကြည့်ရသေးသလို `find` ဖြင့်ပြုလုပ်၍ရသော အချို့သော မိုက်သည့် အရာများမစမ်းကြည့်ရသေးသော်လည်း MongoDB ကို install ပြုလုပ်ပြီး run ခြင်း၊ `insert` နှင့် `remove` ပြုလုပ်ခြင်းတို့ကို လုပ်ဆောင်ပြီးဖြစ်သည်။ ထိုနောက် `find` အကြောင်းနှင့် MongoDB မှ `selector` အကြောင်းကို မိတ်ဆက်ပေးခဲ့ပြီးဖြစ်သည်။ သင်ယုံချင်မှယုံမည်ဖြစ်သော်လည်း ယခုအခြေအနေလောက်ဖြင့် MongoDB နှင့်ပတ်သတ်သော အခြေခံတော်တော်များများကို သင်သိရှိပြီးဖြစ်သည်။ ထိုမျှပင် သင်ရလွယ်ကူသလို အသုံးပြုရလွယ်ကူသည်။ သို့သော် နောက်အဆင့်များမတိုင်ခင် local မှာပင် အကြိမ်ကြိမ်စမ်းသပ်ရန် အကြံပြုလိုသည်။ မတူညီသော documents များ insert ပြုလုပ်ခြင်း၊ collection အသစ်များဖန်တီးခြင်း၊ နှင့် selector များကိုရင်းနှီးအောင် လေ့လာထားသင့်သည်။ ကိုယ့်ဖာသာကိုယ် `find` ၊ `count` နှင့် `remove` များအသုံးပြုပြီး အကြိမ်ကြိမ်စမ်းသပ်ပါက တဖြည်းဖြည်းရင်းနှီးလာပြီး အသားကျလာပါလိမ့်မည်။
+`update` command ကိုမကြည့်ရသေးသလို `find` ဖြင့်ပြုလုပ်၍ရသော အချို့သော မိုက်သည့် အရာများ မစမ်းကြည့်ရသေးသော်လည်း MongoDB ကို install ပြုလုပ်ပြီး run ခြင်း၊ `insert` နှင့် `remove` ပြုလုပ်ခြင်းတို့ကို လုပ်ဆောင်ပြီးဖြစ်သည်။ ထိုနောက် `find` အကြောင်းနှင့် MongoDB မှ `selector` အကြောင်းကို မိတ်ဆက်ပေးခဲ့ပြီးဖြစ်သည်။ သင်ယုံချင်မှယုံမည်ဖြစ်သော်လည်း ယခုအခြေအနေလောက်ဖြင့် MongoDB နှင့်ပတ်သတ်သော အခြေခံတော်တော်များများကို သင်သိရှိပြီးဖြစ်သည်။ ထိုမျှပင် သင်ရလွယ်ကူသလို အသုံးပြုရ လွယ်ကူသည်။ သို့သော် နောက်အဆင့်များမတိုင်ခင် local မှာပင် အကြိမ်ကြိမ်စမ်းသပ်ရန် အကြံပြုလိုသည်။ မတူညီသော documents များ insert ပြုလုပ်ခြင်း၊ collection အသစ်များဖန်တီးခြင်း၊ နှင့် selector များကိုရင်းနှီးအောင် လေ့လာထားသင့်သည်။ ကိုယ့်ဖာသာကိုယ် `find` ၊ `count` နှင့် `remove` များအသုံးပြုပြီး အကြိမ်ကြိမ်စမ်းသပ်ပါက တဖြည်းဖြည်းရင်းနှီးလာပြီး အသားကျလာပါလိမ့်မည်။
 
 # Chapter 2 - Updating #
-In chapter 1 we introduced three of the four CRUD (create, read, update and delete) operations. This chapter is dedicated to the one we skipped over: `update`. `Update` has a few surprising behaviors, which is why we dedicate a chapter to it.
+
+အခန်း (၁)တွင် CRUD (Create, Read, Update and Delete) ၏ သုံးခုကို မိတ်ဆက်ပေးခဲ့သည်။ ယခု အခန်းတွင် `update` တစ်ခုကို အာရုံစိုက်ရန်ရည်ရွယ်ထားသည်။ `Update` ပြုလုပ်ခြင်းသည် အံဩဖွယ်ရာလုပ်ဆောင်ချက်များပါဝင်ပြီး ထိုကြောင့် ၎င်းအတွက် သီးသန့် အခန်းတစ်ခု ရေးရခြင်းဖြစ်သည်။
 
 ## Update: Replace Versus $set ##
-In its simplest form, `update` takes two parameters: the selector (where) to use and what updates to apply to fields. If Roooooodles had gained a bit of weight, you might expect that we should execute:
+
+`update` ၏ အရိုးရှင်းဆုံးပုံစံတွင် parameter နှစ်ခုလက်ခံသည်။ selector (ဘယ်အချိန်မှာ) နှင့် field များကို ဘာ update ပြုလုပ်မည်တို့ဖြစ်သည်။ Roooooodles ပို၍ဝလာပါက အောက်ပါအတိုင်း execute ပြုလုပ်ရမည်ဖြစ်သည်။
 
 	db.unicorns.update({name: 'Roooooodles'},
 		{weight: 590})
 
-(If you've played with your `unicorns` collection and it doesn't have the original data anymore, go ahead and `remove` all documents and re-insert from the code in chapter 1.)
 
-Now, if we look at the updated record:
+(`unicorns` collection ကိုစမ်းရင်းနှင့် နဂို data အတိုင်းမဟုတ်ပဲပြောင်းလဲသွားပါက document များအားလုံးကို `remove` ပြုလုပ်ပြီး အခန်း (၁) ကအတိုင်း ပြန်၍ insert ပြုလုပ်ရန်လိုပါမည်)
+
+update ပြုလုပ်ထားသည့် record ကိုကြည့်ကြည့်ပါ
 
 	db.unicorns.find({name: 'Roooooodles'})
 
-You should discover the first surprise of `update`. No document is found because the second parameter we supplied didn't have any update operators, and therefore it was used to **replace** the original document. In other words, the `update` found a document by `name` and replaced the entire document with the new document (the second parameter). There is no equivalent functionality to this in SQL's `update` command. In some situations, this is ideal and can be leveraged for some truly dynamic updates. However, when you want to change the value of one, or a few fields, you must use MongoDB's `$set` operator. Go ahead and run this update to reset the lost fields:
+`update` ၏ ပထမဆုံး အံ့ဖွယ်ကို မြင်တွေ့ရမည်ဖြစ်သည်။ မိမိတို့ apply ပြုလုပ်သော parameter မှ အခြား parameter များကိုမြင်တွေ့ရမည် မဟုတ်ပေ။ update ပြုလုပ်ရာတွင်လိုအပ်သော operator များအသုံးမပြုသဖြင့် မူလ original document ကို အသစ်သွင်းသည့် parameter ဖြင့်လုံးလုံး အစားထိုးလိုက်ခြင်းဖြစ်သည်။ ၎င်းကဲ့သို အရာများသည် SQL update များတွင်ဖြစ်မည်မဟုတ်ပေ။ ထိုကြောင့် MongoDB တွင် value တစ်ခုနှင့် တစ်ခုထက်ပိုသော field များကိုပြင်လိုပါက `$set` operator ကိုအသုံးပြုရသည်။ အောက်ပါအတိုင်း ပြန်ရိုက်ထည့်၍ ပျက်သွားသော field များကိုပါ ပြင်ကြည့်လိုက်ပါ။
 
 	db.unicorns.update({weight: 590}, {$set: {
 		name: 'Roooooodles',
@@ -285,16 +288,16 @@ You should discover the first surprise of `update`. No document is found because
 		gender: 'm',
 		vampires: 99}})
 
-This won't overwrite the new `weight` since we didn't specify it. Now if we execute:
+၎င်းတွင် `weight` ကို မသတ်မှတ်ထား၍ overwrite ဖြစ်မည်မဟုတ်ပေ။ ၎င်းကို execute လုပ်ပါက
 
 	db.unicorns.find({name: 'Roooooodles'})
 
-We get the expected result. Therefore, the correct way to have updated the weight in the first place is:
+လိုချင်သည့် result ကိုရမည်ဖြစ်သည်။ ထိုကြောင့် weight ကိုချည်းသက်သက် update ပြုလုပ်လိုပါက ပြင်ရမည့်ပုံစံသည် အောက်ပါအတိုင်းဖြစ်သည်။
 
 	db.unicorns.update({name: 'Roooooodles'},
 		{$set: {weight: 590}})
 
-## Update Operators ##
+## Update Operator များ ##
 In addition to `$set`, we can leverage other operators to do some nifty things. All update operators work on fields - so your entire document won't be wiped out. For example, the `$inc` operator is used to increment a field by a certain positive or negative amount. If Pilot was incorrectly awarded a couple vampire kills, we could correct the mistake by executing:
 
 	db.unicorns.update({name: 'Pilot'},
