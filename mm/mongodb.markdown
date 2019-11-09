@@ -298,55 +298,62 @@ update ပြုလုပ်ထားသည့် record ကိုကြည့�
 		{$set: {weight: 590}})
 
 ## Update Operator များ ##
-In addition to `$set`, we can leverage other operators to do some nifty things. All update operators work on fields - so your entire document won't be wiped out. For example, the `$inc` operator is used to increment a field by a certain positive or negative amount. If Pilot was incorrectly awarded a couple vampire kills, we could correct the mistake by executing:
+
+`$set` operator အပြင် တခြားသော operator များလည်းရှိပါသေးသည်။ update operator များသည် field အတွက်သာ အလုပ်လုပ်မည်ဖြစ်ပြီး document တစ်ခုလုံးကို အပြတ်ရှင်းမည်မဟုတ်ပါ။ ဥပမာ `$inc` operator သည် အပေါင်းနှင့် အနှုတ်ကိန်းများကို တိုးရန် အသုံးပြုမည်ဖြစ်သည်။ ဥပမာ Pilot ၏ vampire ကိုနှိမ်နှင်းခဲ့သည့် အရေအတွက်သည် မှားယွင်းနေပါက အောက်ပါအတိုင်း execute လုပ်၍ ပြင်နိုင်သည်။
 
 	db.unicorns.update({name: 'Pilot'},
 		{$inc: {vampires: -2}})
 
-If Aurora suddenly developed a sweet tooth, we could add a value to her `loves` field via the `$push` operator:
+အကယ်၍ Aurora တစ်ယောက် အချိုကြိုက်လာပါကလား ၎င်း `loves` field ထဲ့သို့ `$push` operator အသုံးပြု၍ ထပ်ဖြည့်နိုင်သည်။
 
 	db.unicorns.update({name: 'Aurora'},
 		{$push: {loves: 'sugar'}})
 
-The [Update Operators](http://docs.mongodb.org/manual/reference/operator/update/#update-operators) section of the MongoDB manual has more information on the other available update operators.
+
+MongoDB Manual တွင်ပါရှိသည့် [Update Operators](http://docs.mongodb.org/manual/reference/operator/update/#update-operators) section ကိုဖတ်၍ အခြား အသုံးပြုနိုင်သော update operator များအကြောင်းကိုလေ့လာနိုင်သည်။
+
 
 ## Upserts ##
-One of the more pleasant surprises of using `update` is that it fully supports `upserts`. An `upsert` updates the document if found or inserts it if not. Upserts are handy to have in certain situations and when you run into one, you'll know it. To enable upserting we pass a third parameter to update `{upsert:true}`.
 
-A mundane example is a hit counter for a website. If we wanted to keep an aggregate count in real time, we'd have to see if the record already existed for the page, and based on that decide to run an update or insert. With the upsert option omitted (or set to false), executing the following won't do anything:
+
+`update` ကိုအသုံးပြုသောအခါ စိတ်ချမ်းသာစရာတစ်ခုကတော့ `upsert` ကိုအသုံးပြုနိုင်ခြင်းဖြစ်သည်။ `upsert` သည် data ရှိပါက update ပြုလုပ်ပြီးမရှိပါက insert ပြုလုပ်ပေးခြင်းဖြစ်သည်။ upsert များသည် အချို့သော အခြေအနေများအတွက် အလွန်အသုံးဝင်ပြီး သုံးနေရင်း သိလာပါလိမ့်မည်။ upsert ကိုအသုံးပြုရန် update ၏ တတိယ parameter အနေဖြင့် `{upsert:true}` ဟုထည့်ပေးရသည်။
+
+ခပ်ရိုးရိုး ဥပမာအနေဖြင့် ပြောရလျှင် website အတွက် hit counter တစ်ခုဆိုပါစို့။ ဥပမာ real time အနေဖြင့် count များကို စုစည်းဖော်ပြလိုသည် ဆိုပါစို့။ ထို page အတွက် record မှာရှိပြီးသားမရှိသေးသည်လားကို ဆန်းစစ်ပြီး update သို့မဟုတ် insert ကို run ရမည်။ upsert option ကိုမသုံးပဲ သို့မဟုတ် false လုပ်ထားပါက အောက်ပါ option မှာ မည်သို့မှ အလုပ်လုပ်မည်မဟုတ်ပေ။
 
 	db.hits.update({page: 'unicorns'},
 		{$inc: {hits: 1}});
 	db.hits.find();
 
-However, if we add the upsert option, the results are quite different:
+သို့သော် upsert option ကိုထည့်လိုက်ပါက ရလဒ်မှာပြောင်းလဲသွားသည်။
 
 	db.hits.update({page: 'unicorns'},
 		{$inc: {hits: 1}}, {upsert:true});
 	db.hits.find();
 
-Since no documents exists with a field `page` equal to `unicorns`, a new document is inserted. If we execute it a second time, the existing document is updated and `hits` is incremented to 2.
+`page` သည် `unicorns` နှင့်တူသော document ကိုရှာမတွေ့ပါက အသစ်အနေဖြင့် insert လုပ်သွားမည်ဖြစ်သည်။ အကယ်၍ ဒုတိယ အကြိမ်ထပ် run ပါက ရှိပြီးသား document သည် update ဖြစ်သွားပြီး `hits` သည် ၂ သို့ပြောင်းသွားမည်ဖြစ်သည်။
 
 	db.hits.update({page: 'unicorns'},
 		{$inc: {hits: 1}}, {upsert:true});
 	db.hits.find();
 
 ## Multiple Updates ##
-The final surprise `update` has to offer is that, by default, it'll update a single document. So far, for the examples we've looked at, this might seem logical. However, if you executed something like:
+
+`update` ၏အံဖွယ်နောက်တစ်ခုမှာ default အနေဖြင့် document တစ်ခုကိုသာ update လုပ်ခြင်းဖြစ်သည်။ အထက်က ဥပမာတွေဆိုလျင် အလုပ်ဖြစ်နေမည်ဖြစ်သော်လည်း သင့်အနေဖြင့် အောက်ကအတိုင်းဆောင်ရွက်လိုပါက
 
 	db.unicorns.update({},
 		{$set: {vaccinated: true }});
 	db.unicorns.find({vaccinated: true});
 
-You might expect to find all of your precious unicorns to be vaccinated. To get the behavior you desire, the `multi` option must be set to true:
+သင့်၏ unicorn တွေအားလုံး 	vaccinated ပြုလုပ်မည်ထင်ထားမည်ဖြစ်သော်လည်း ထိုသို့ပြုလုပ်ပါက `multi` ဟုသော option ကို true အနေဖြင့်ပေးမှရမည်။
 
 	db.unicorns.update({},
 		{$set: {vaccinated: true }},
 		{multi:true});
 	db.unicorns.find({vaccinated: true});
 
-## In This Chapter ##
-This chapter concluded our introduction to the basic CRUD operations available against a collection. We looked at `update` in detail and observed three interesting behaviors. First, if you pass it a document without update operators, MongoDB's `update` will replace the existing document. Because of this, normally you will use the `$set` operator (or one of the many other available operators that modify the document). Secondly, `update` supports an intuitive `upsert` option which is particularly useful when you don't know if the document already exists. Finally, by default, `update` updates only the first matching document, so use the `multi` option when you want to update all matching documents.
+## ယခုအခန်းတွင် ##
+
+ယခုအခန်းတွင် CRUD operation များ၏ အခြေခံများကိုလေ့လာခဲ့ပြီးဖြစ်သည်။ `update` ၏ စိတ်ဝင်စားစရာကောင်းသည့် အခြေအနေ ၃ခုကို သိရှိရမည်ဖြစ်သည်။ ပထမအချက်မှာ MongoDB တွင် operator များအသုံးမပြုပဲ update ပြုလုပ်ပါက replace ဖြစ်သွားမည်ဖြစ်သည်။ ထိုကြောင့် `$set` အပါအဝင် operator များကိုအသုံးပြုရမည်ဖြစ်သည်။ ဒုတိယအနေဖြင့် `update` လုပ်ရာတွင် data ရှိမရှိ စစ်စရာမလိုတော့သည့် `upsert` option ကိုအသုံးပြုနိုင်သည်။ နောက်ဆုံးအနေဖြင့် `update` သည် မူလသဘောအရ match ဖြစ်သည့် ပထမဆုံးသော document ကိုသာ update ပြုလုပ်ပြီး အကုန်လုံးကိုပြောင်းလဲစေချင်ပါက `multi` option ကိုအသုံးပြုရသည်။
 
 # Chapter 3 - Mastering Find #
 Chapter 1 provided a superficial look at the `find` command. There's more to `find` than understanding `selectors` though. We already mentioned that the result from `find` is a `cursor`. We'll now look at exactly what this means in more detail.
