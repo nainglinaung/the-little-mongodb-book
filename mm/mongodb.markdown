@@ -593,25 +593,30 @@ MongoDB တွင် language များစွာအတွက် driver မျ
 # Chapter 6 - Aggregating Data #
 
 ## Aggregation Pipeline ##
-Aggregation pipeline gives you a way to transform and combine documents in your collection.  You do it by passing the documents through a pipeline that's somewhat analogous to the Unix "pipe" where you send output from one command to another to a third, etc.
 
-The simplest aggregation you are probably already familiar with is the SQL `group by` expression.  We already saw the simple `count()`  method, but what if we want to see how many unicorns are male and how many are female?  
+
+Aggregation pipeline များသည် collection အထဲမှ document များကို ပြောင်းလဲ ပေါင်းစပ် အသုံးပြုနိုင်သည်။ documents များကို Unix မှ "pipe" နှင့် သဘောတရားချင်းဆင်တူသည့် pipeline တစ်ခုမှ တစ်ခုသို့ ပို့၍ အသုံးပြုကြသည်။
+
+အလွယ်ကူဆုံးသော aggregation သောဥပမာမှာ သင့်နှင့်ရင်းနှီးနေပြီးသားဖြစ်သော SQL မှ `group by` ဖြစ်သည်။ ကျွန်တော်တို့ `count()` ကိုတွေ့ပြီးဖြစ်၍ unicorn များမှ မည်သည့်အရေအတွက်သည် အထီးဖြစ်မည် အမဖြစ်မည် ကို သိရှိနိုင်မည်နည်း။ 
 
 	db.unicorns.aggregate([{$group:{_id:'$gender',
 		total: {$sum:1}}}])
 
-In the shell we have the `aggregate` helper which takes an array of pipeline operators.  For a simple count grouped by something, we only need one such operator and it's called `$group`.   This is the exact analog of `GROUP BY` in SQL where we create a new document with `_id` field indicating what field we are grouping by (here it's `gender`) and other fields usually getting assigned results of some aggregation, in this case we `$sum` 1 for each document that matches a particular gender.  You probably noticed that the `_id` field was assigned `'$gender'` and not `'gender'` - the `'$'` before a field name indicates that the value of this field from incoming document will be substituted.
 
-What are some of the other pipeline operators that we can use?  The most common one to use before (and frequently after) `$group` would be `$match` - this is exactly like the `find` method and it allows us to aggregate only a matching subset of our documents, or to exclude some documents from our result.
+Shell အတွင်းတွင် `aggregate` ဟုသော helper သည် pipeline operator များကို array အနေဖြင့် လက်ခံသည်ကိုတွေ့ရှိရမည်။ ရိုးရိုး group by တစ်ခု၏ အရေအတွက်ကိုသာ အလိုရှိပါက `$group` ဟုခေါ်သည့် operator တစ်ခုသာလိုသည်။ ၎င်းသည် SQL တွင်ရှိသည့် `GROUP BY`  နှင့်  အတူတူပင်ဖြစ်ပြီး `_id` field သည် မိမိတို့ group ပြုလုပ်လိုသော field ( ယခုနေရာတွင် `gender` ) နှင့် အခြား fields များသည် aggregation ၏ ရလဒ်ဖြင့် တွဲဖက်ဖော်ပြလေ့ရှိပြီး ယခု ရလဒ်တွင်မူ `$sum` ဟု တိုက်ဆိုင်သည့် document တိုင်းကို ၁ ပေါင်းထည့်မည်ဖြစ်သည်။ 
+သတိထားမိမည်က `_id` ကို assign လုပ်ထားသည်က `$gender` ဖြစ်ပြီး `gender` မဟုတ်ပါ။ `$` ထို field ၏ value ကိုအစားထိုးမည်ဟု သတ်မှတ်ထားခြင်းဖြစ်သည်။
+
+တခြားဘယ် pipeline operator တွေရှိသေးလဲ? `$group` အပြင် အများဆုံးအသုံးပြုလေ့ရှိသည့် အရာမှာ `$match` ဖြစ်ပြီး ၎င်းသည် `find` နှင့်အတူတူပင်ဖြစ်ပြီး ၎င်း၏ရလဒ်မှ ကိုက်ညီသော document များကိုသာသယ်ဆောင်သွားပြီး ကျန်သည်များကို ချန်လှစ်ထားခဲ့သည်။
 
 	db.unicorns.aggregate([{$match: {weight:{$lt:600}}},
 		{$group: {_id:'$gender',  total:{$sum:1},
 		  avgVamp:{$avg:'$vampires'}}},
 		{$sort:{avgVamp:-1}} ])
 
-Here we introduced another pipeline operator `$sort` which does exactly what you would expect, along with it we also get `$skip` and `$limit`.  We also used a `$group` operator `$avg`.
 
-MongoDB arrays are powerful and they don't stop us from being able to aggregate on values that are stored inside of them.  We do need to be able to "flatten" them to properly count everything:
+တခြား pipeline operator တစ်ခုမှာ `$sort` ဖြစ်ပြီး သင်ထင်ထားသည့်အတိုင်းပင် ဖြစ်သည်။ ထို့အပြင် `$skip` နှင့် `$limit` ၊ ထိုအပြင် `$group` operator နှင့်တွဲဖက် အသုံးပြုလေ့ရှိသည့် `$avg`  တို့လည်းရှိသည်။
+
+MongoDB ၏ array များသည် powerful ဖြစ်ပြီး ၎င်းတို့၏ အတွင်းပိုင်းထဲထိ value များကို aggregate ပြုလုပ်နိုင်သည်။ ထိုသို့မပြုလုပ်မှီ "ဖြန့်ချ" ကာ ရေတွက်နိုင်သည်။
 
 	db.unicorns.aggregate([{$unwind:'$loves'},
      	{$group: {_id:'$loves',  total:{$sum:1},
@@ -619,21 +624,26 @@ MongoDB arrays are powerful and they don't stop us from being able to aggregate 
 	  	{$sort:{total:-1}},
 	  	{$limit:1} ])
 
-Here we will find out which food item is loved by the most unicorns and we will also get the list of names of all the unicorns that love it.  `$sort` and `$limit` in combination allow you to get answers to "top N" types of questions.
 
-There is another powerful pipeline operator called [`$project`](http://docs.mongodb.org/manual/reference/operator/aggregation/project/#pipe._S_project) (analogous to the projection we can specify to `find`) which allows you not just to include certain fields, but to create or calculate new fields based on values in existing fields.  For example, you can use math operators to add together values of several fields before finding out the average, or you can use string operators to create a new field that's a concatenation of some existing fields.
+အခုဆိုရင်ဖြင့် unicorn အများစုမှာ မည်သည့် food item ကိုအကြိုက်ဆုံးဖြစ်သည်နှင့် ၎င်းတို့ကို ကြိုက်သည့် unicode အမည်များကိုပါ မြင်တွေ့နိုင်မည်ဖြစ်သည်။ `$sort` နှင့် `$limit` ကိုပေါင်းစပ်အသုံးပြုခြင်းဖြင့် `ထိပ်ဆုံး ဘယ်နှစ်ခု` ဆိုသော မေးခွန်းများ၏ အဖြေများကို ရှာနိုင်သည်။ 
 
-This just barely scratches the surface of what you can do with aggregations.  In 2.6 aggregation got more powerful as the aggregate command returns either a cursor to the result set (which you already know how to work with from Chapter 1) or it can write your results into a new collection using the `$out` pipeline operator.  You can see a lot more examples as well as all of the supported pipeline and expression operators in the [MongoDB manual](http://docs.mongodb.org/manual/core/aggregation-pipeline/).
+နောက်ထပ် powerful ဖြစ်သည့် pipline operator တစ်ခုမှာ [`$project`](http://docs.mongodb.org/manual/reference/operator/aggregation/project/#pipe._S_project) ဖြစ်ပြီး (`find` မှ ဒုတိယ parameter နှင့်ဆင်တူသည်) မည့်သည့် field များကို ရယူမည်နည်းနှင့် ရှိပြီးသား field မှ value များကို calculate ပြုလုပ်ပြီး field အသစ်များတည်ဆောက်နိုင်သည်။ ဥပမာ သင့်အနေဖြင့် ပျမ်းမျှမပြုလုပ်မီ fields များအချင်းချင်း ပေါင်းခခြင်း ၊ သို့မဟုတ် fields များကို ဆက်စပ်ခြင်းများကို ပြုလုပ်နိုင်သည်။ 
+
+၎င်းသည် aggregation နှင့်ပြုလုပ်နိုင်သည်၏ အပေါ်ယံပင်ရှိသေးသည်။ MongoDB ၏ version အသစ်ထွက်လာသည်နှင့်အမျှ aggregation တွင် operator အသစ်များ ပါပါလာပြီး ပို၍ powerful ဖြစ်လာသည်။ aggregate command သည် find ကဲ့သို့ပဲ cursor return ပြန်ပြီး collection အသစ်ဆီသို့ export ထုတ်ယူလိုပါက `$out` ဟုသော pipeline operator ကိုအသုံးပြုနိုင်သည်။ MongoDB တွင် support ပြုလုပ်သော pipeline operator အကြောင်းကို ဥပမာနှင့် တကွ သိရှိလိုပါက [MongoDB manual](http://docs.mongodb.org/manual/core/aggregation-pipeline/) တွင်ဖတ်နိုင်ပါသည်။
 
 ## MapReduce ##
-MapReduce is a two-step approach to data processing. First you map, and then you reduce. The mapping step transforms the inputted documents and emits a key=>value pair (the key and/or value can be complex). Then, key/value pairs are grouped by key, such that values for the same key end up in an array. The reduce gets a key and the array of values emitted for that key, and produces the final result.  The map and reduce functions are written in JavaScript.
 
-With MongoDB we use the `mapReduce` command on a collection. `mapReduce` takes a map function, a reduce function and an output directive. In our shell we can create and pass a JavaScript function. From most libraries you supply a string of your functions (which is a bit ugly). The third parameter sets additional options, for example we could filter, sort and limit the documents that we want analyzed. We can also supply a `finalize` method to be applied to the results after the `reduce` step.
+Mapreduce သည် data process ပြုလုပ်ရာတွင် နှစ်ဆင့်ခံ process တစ်ခုဖြစ်သည်။ ပထမဦးစွာ map ပြီးနောက် reduce ပြုလုပ်သည်။ mapping အဆင့်တွင် input document များကို transform ပြုလုပ်ပြီး key => value အတွဲများအဖြစ် (key သက်သက် value သက်သက် သည်ပို၍ ရှုပ်ထွေးသည်) ပြန်ထုတ်ပေးပြီး ထို key value အတွဲများမှာ key အနေဖြင့် group by ပြုလုပ်ပြီး တူညီသော key များမှာ array တစ်ခုတည်းတွင် ကျရောက်လေ့ရှိသည်။ ထိုနောက် reduce မှာ key နှင့် array value ကိုရယူပြီး နောက်ဆုံး ရလဒ်ကို ထုတ်ပေးသည်။ map နှင့် reduce function များကို Javascript ဖြင့်ရေးသားထားသည်။
 
-You probably won't need to use MapReduce for most of your aggregations, but if you do, you can read more about it [on my blog](http://openmymind.net/2011/1/20/Understanding-Map-Reduce/) and in [MongoDB manual](http://docs.mongodb.org/manual/core/map-reduce/).
+MongoDB တွင် `mapReduce` command ကို collection တစ်ခုတွင် အသုံးပြုနိုင်သည်။ `mapReduce` သည် map function တစ်ခု ၊ reduce function တစ်ခုနှင့် output directive တစ်ခု ပါရှိရန်လိုသည်။ Shell တွင် Javascript function တစ်ခု ပြုလုပ်ပြီး pass နိုင်သည်။ တချို့ library တွင်မူ function ကို string အနေဖြင့် (ရုပ်ဆိုးသော်လည်း) pass နိုင်သည်။ တတိယ parameter တစ်ခုပါရှိပြီး ၎င်းမှာ အပို options များဖြစ်သည့် မိမိတို့စိတ်ကြိုက် filter ၊ sort နှင့် limit ပြုလုပ်နိုင်သည်။ ထိုအပြင် `reduce` အဆင့်ပြီးသွားပါက နောက်ဆုံးတွင်ပြုလုပ်လိုသည်များကို `finalize` method အတွင်းတွင် ပြုလုပ်နိုင်သည်။
 
-## In This Chapter ##
-In this chapter we covered MongoDB's [aggregation capabilities](http://docs.mongodb.org/manual/aggregation/).  Aggregation Pipeline is relatively simple to write once you understand how it's structured and it's a powerful way to group data. MapReduce is more complicated to understand, but its capabilities can be as boundless as any code you can write in JavaScript.
+Aggregation အတော်များများအတွက် MapReduce အသုံးပြုရန် မလိုအပ်လှသော်လည်း လိုအပ်လာပါက [ကျွန်တော်ဘလော့](http://openmymind.net/2011/1/20/Understanding-Map-Reduce/) နှင့်   [MongoDB manual](http://docs.mongodb.org/manual/core/map-reduce/) များတွင်ဖတ်ရှုနိုင်သည်။
+
+
+## ယခု အခန်းတွင် ##
+
+ယခု အခန်းတွင် MongoDB ၏ [aggregation capabilities](http://docs.mongodb.org/manual/aggregation/) အကြောင်းပြောခဲ့ပြီးဖြစ်သည်။ Aggregation Pipeline  များသည် သူ့၏တည်ဆောက်ကို နားလည်သည်နှင့်  ရေးရသည်မှာ ရိုးရှင်းပြီး data များကို အုပ်စုဖွဲ့ရာတွင် အလွန် powerful ဖြစ်သည်။ MapReduce များမှာ ပို၍နားလည်ရန် ခက်ခဲသော်လည်း Javascript ဖြင့်ရေးသားနိုင်သောကြောင့် ၎င်း၏လုပ်ဆောင်နိုင်စွမ်းမှာ အကန့်အသတ်မရှိပေ။
+
 
 # Chapter 7 - Performance and Tools #
 In this last chapter, we look at a few performance topics as well as some of the tools available to MongoDB developers. We won't dive deeply into either topic, but we will examine the most important aspects of each.
