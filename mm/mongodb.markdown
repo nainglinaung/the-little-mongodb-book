@@ -645,104 +645,124 @@ Aggregation အတော်များများအတွက် MapReduce �
 ယခု အခန်းတွင် MongoDB ၏ [aggregation capabilities](http://docs.mongodb.org/manual/aggregation/) အကြောင်းပြောခဲ့ပြီးဖြစ်သည်။ Aggregation Pipeline  များသည် သူ့၏တည်ဆောက်ကို နားလည်သည်နှင့်  ရေးရသည်မှာ ရိုးရှင်းပြီး data များကို အုပ်စုဖွဲ့ရာတွင် အလွန် powerful ဖြစ်သည်။ MapReduce များမှာ ပို၍နားလည်ရန် ခက်ခဲသော်လည်း Javascript ဖြင့်ရေးသားနိုင်သောကြောင့် ၎င်း၏လုပ်ဆောင်နိုင်စွမ်းမှာ အကန့်အသတ်မရှိပေ။
 
 
-# Chapter 7 - Performance and Tools #
-In this last chapter, we look at a few performance topics as well as some of the tools available to MongoDB developers. We won't dive deeply into either topic, but we will examine the most important aspects of each.
+# အခန်း (၇) Performance နှင့် Tool များ #
 
-## Indexes ##
-At the very beginning we saw the `getIndexes` command which shows information on all the indexes in a collection. Indexes in MongoDB work a lot like indexes in a relational database: they help improve query and sorting performance. Indexes are created via `ensureIndex`:
+
+နောက်ဆုံးအခန်းတွင်မူ MongoDB ၏ performance နှင့် developer များအတွက် အသုံးပြုနိုင်သော tool များအကြောင်း ပြောသွားမည်။ ၎င်း topic များနှင့်ပတ်သတ်၍ အသေးစိတ် ဆင်းသွားမည်မဟုတ်သော်လည်း ၎င်းတို့၏ အဓိကကျသည့် အချက်များကို ကြည့်သွားမည်ဖြစ်သည်။
+
+
+## Index များ ##
+
+
+အစောပိုင်းကတည်းက collection တစ်ခုမှ index များကိုထုတ်ပြသည့် `getIndexes` ဆိုသည့် command နင့် ရင်းနှီးပြီးဖြစ်သည်။ MongoDB မှ index များသည် relational database များမှ index များနှင့် အတူတူပင်ဖြစ်ပြီး query နှင့် sorting ၏ performance ကိုပိုမိုကောင်းမွန်စေရန်ရည်ရွယ်သည်။ Index များကို `ensureIndex` ကို အသုံးပြုပြီး ဖန်တီးနိုင်ကာ
 
 	// where "name" is the field name
 	db.unicorns.ensureIndex({name: 1});
 
-And dropped via `dropIndex`:
+`dropIndex` ကိုအသုံးပြုပြီး drop ပြုလုပ်နိုင်သည်။
 
 	db.unicorns.dropIndex({name: 1});
 
-A unique index can be created by supplying a second parameter and setting `unique` to `true`:
+ဒုတိယ parameter အနေဖြင့် `unique` ကို `true` ဟုပြောင်းလဲပြီး unique index တစ်ခုဖန်တီးနိုင်သည်။
 
 	db.unicorns.ensureIndex({name: 1},
 		{unique: true});
 
-Indexes can be created on embedded fields (again, using the dot-notation) and on array fields. We can also create compound indexes:
+
+Index များကို embedded field များနှင့် array များတွင်လည်း ဖန်တီးနိုင်သည်။ ထိုအပြင် compound index တစ်ခုကို အောက်ပါအတိုင်း ဖန်တီးနိုင်သည်။
 
 	db.unicorns.ensureIndex({name: 1,
 		vampires: -1});
 
-The direction of your index (1 for ascending, -1 for descending) doesn't matter for a single key index, but it can make a difference for compound indexes when you are sorting on more than one indexed field.
+Index တစ်ခု၏ direction (1 မှာ အစဉ်အတိုင်း -1 မှာ ပြောင်းပြန် ) သည် single key index အတွက် သိပ်အရေးမပါလှသော်လည်း တစ်ခုထက်ပိုသော အရာများဖြင့် sort ပြုလုပ်သောအခါ  compound index များတွင်မူ အတော် ကွာခြားသည်။ 
 
 The [indexes page](http://docs.mongodb.org/manual/indexes/) has additional information on indexes.
 
 ## Explain ##
-To see whether or not your queries are using an index, you can use the `explain` method on a cursor:
+
+မိမိတို့ အသုံးပြုသည့် query များသည် index ကို အသုံးပြုခြင်းရှိမရှိကို  cursor အတွင်းရှိ `explain` method ကို အသုံးပြု၍ သိရှိနိုင်သည်။
 
 	db.unicorns.find().explain()
 
-The output tells us that a `BasicCursor` was used (which means non-indexed), that 12 objects were scanned, how long it took, what index, if any, was used as well as a few other pieces of useful information.
 
-If we change our query to use an index, we'll see that a `BtreeCursor` was used, as well as the index used to fulfill the request:
+ရလဒ်အနေဖြင့် `BasicCursor` အနေဖြင့် မြင်တွေ့ရမည် ဖြစ်ပြီး (index မပြုလုပ်ရသေးဟု ဆိုလိုသည်) object 12 ခုကို scan ပြုလုပ်ကြောင်း၊ ဘယ်လောက်ကြာသည်၊ index ရှိခဲ့ပါက  ဘယ် index ကိုအသုံးပြုသည် စသဖြင့် အခြားအသုံးဝင်သော အချက်အလက်များကို ဖော်ပြပေးသည်။
+
+Index ကိုအသုံးပြုသော query ဖြင့်ရှာကြည့်ပါက index ဖြင့် ပတ်သတ်သော အချက်အလက်များ အပြင် `BtreeCursor` ဟု မြင်တွေ့ရမည်ဖြစ်သည်။
 
 	db.unicorns.find({name: 'Pilot'}).explain()
 
 ## Replication ##
-MongoDB replication works in some ways similarly to how relational database replication works. All production deployments should be replica sets, which consist of ideally three or more servers that hold the same data.  Writes are sent to a single server, the primary, from where it's asynchronously replicated to every secondary. You can control whether you allow reads to happen on secondaries or not, which can help direct some special queries away from the primary, at the risk of reading slightly stale data. If the primary goes down, one of the secondaries will be automatically elected to be the new primary. Again, MongoDB replication is outside the scope of this book.
+
+MongoDB ၏ replication သည် relational database များကဲ့သို့ပင် ခပ်ဆင်ဆင် အလုပ်လုပ်သည်။ production deployment အားလုံးသည် သုံးခုနှင့် ၎င်းထက်ပိုသော တူညီသော data များတည်ရှိသည် server များဖြင့် replica set များဖြစ်သင့်သည်။
+Write များကို Primary ဖြစ်သည့် server တစ်ခုသို့ပိုပြီး ထိုမှတဆင့် တခြား secondary server များသို့ asynchronous အနေဖြင့် replicate ပြုလုပ်သည်။ Read များကို secondary မှ ပြုလုပ်မည် မပြုလုပ်မည်ကို config ပြုလုပ်နိုင်ပြီး ၎င်းသည် primary သို့ အလှုပ်ရှုပ်မည့် query တချို့ကို လျော့ကျစေသည်။ Primary ကျသွားပါက Secondary များအနက် တစ်ခုသည် Primary အသစ်အဖြစ် ရွှေးကောက်တင်မြောက်ခြင်းခံရမည် ဖြစ်သည်။ ထပ်၍ ပြောရမည်ဆိုလျင် MongoDB ၏ replication ယခု စာအုပ် scope မှကျော်လွန်သွားပြီဖြစ်သည်။
 
 ## Sharding ##
-MongoDB supports auto-sharding. Sharding is an approach to scalability which partitions your data across multiple servers or clusters. A naive implementation might put all of the data for users with a name that starts with A-M on server 1 and the rest on server 2. Thankfully, MongoDB's sharding capabilities far exceed such a simple algorithm. Sharding is a topic well beyond the scope of this book, but you should know that it exists and that you should consider it, should your needs grow beyond a single replica set.
 
-While replication can help performance somewhat (by isolating long running queries to secondaries, and reducing latency for some other types of queries), its main purpose is to provide high availability. Sharding is the primary method for scaling MongoDB clusters. Combining replication with sharding is the perscribed approach to achieve scaling and high availability.
+MongoDB သည် sharding ကိုအလိုအလျောက် support လုပ်သည်။ sharding သည် server သို့မဟုတ် cluster များမှ data များကို များပြားလာပါက scale လုပ်နိုင်ရန် data များကို ပိုင်းခြား၍ သိမ်းဆည်းပေးသော စနစ်ဖြစ်သည်။ အလွယ်ပြောရလျင် user ၏ အမည်များကို သိမ်းရသည်ဆိုပါစို့ A မှ M အထိကို server တစ်လုံးတွင်သိမ်း၍ ကျန်သည်ကို နောက်တလုံးတွင် သိမ်းခြင်း ကဲ့သိုပင်။ MongoDB ၏ sharding လုပ်နိုင်စွမ်းသည် ထိုထက်ပို၍ကျယ်ပြန့်သော်လည်း ယခုစာအုပ်တွင်တော့ အသေးစိတ် မဖော်ပြတော့ပေ။ သို့သော် ထို feature များရှိသည်ဟု သိထားရန်လိုပြီး လိုအပ်ပါက အသုံးပြနိုင်ရန်ဖြစ်သည်။
+
+replication သည် performance အတွက် တပိုင်းတစ ကောင်းမွန်သော်လည်း ( အားစိုက်ရမည့် query များကို secondary များတွင် run ချင်းဖြင့်သော်လည်းကောင်း တချို့သော query များအတွက် latency လျှော့ချခြင်းဖြင့်သော်လည်းကောင်း) ၎င်းအဓိက ရည်ရွယ်ချက်မှာ high availability အတွက်ဖြစ်သည်။ Sharding မှာမူ MongoDB cluster များကို scale ပြုလုပ်ရန်ရွယ်ထားပြီး ၎င်းနှစ်ခုကို ပေါင်းစပ် အသုံးပြုခြင်းဖြင့် မိမိတို့လိုလားသော ရလဒ်ကို ရရှိအောင် လုပ်ယူရမည်။
 
 ## Stats ##
-You can obtain statistics on a database by typing `db.stats()`. Most of the information deals with the size of your database. You can also get statistics on a collection, say `unicorns`, by typing `db.unicorns.stats()`. Most of this information relates to the size of your collection and its indexes.
+
+database ၏ အချက်အလက်များကို `db.stats()` ဟုရိုက်ကြည့်နိုင်သည်။ အချက်အလက်အများစုမှာ database ၏ size နှင့်ပတ်သတ်သည်များဖြစ်သည်။ collection ၏ အချက်အလက်ကိုလည်း ဥပမာ `unicorns` ကိုသိချင်ပါက `db.unicorns.stats()` ဟုရိုက်ရှာနိုင်ပြီး collection နှင့် index များအကြောင်းကိုဖော်ပြပေးမည်ဖြစ်သည်။
 
 ## Profiler ##
-You enable the MongoDB profiler by executing:
+
+MongoDB ၏ profiler ကိုအောက်ပါအတိုင်း enable ပြုလုပ်နိုင်သည်။
 
 	db.setProfilingLevel(2);
 
-With it enabled, we can run a command:
+enable ပြုလုပ်ပြီးနောက် အောက်ပါ command ကို run နိုင်သည်။
 
 	db.unicorns.find({weight: {$gt: 600}});
 
-And then examine the profiler:
+ထိုနောက် profiler ကို အောက်ပါအတိုင်းကြည့်နိုင်သည်။
 
 	db.system.profile.find()
 
-The output tells us what was run and when, how many documents were scanned, and how much data was returned.
+မည်သည်ကနှင့် ဘယ်အချိန်က run သည်၊ document မည်မျှ scan ပြုလုပ်သည်၊ မည်မျှ data များ return သည်ကိုဖော်ပြပေးသည်။
 
-You disable the profiler by calling `setProfilingLevel` again but changing the parameter to `0`. Specifying `1` as the first parameter will profile queries that take more than 100 milliseconds. 100 milliseconds is the default threshold, you can specify a different minimum time, in milliseconds, with a second parameter:
+`setProfilingLevel` ၏ parameter ကို `0` ထားပြီး profiler ကို disable ပြုလုပ်နိုင်သည်။ `1` ဟုထားပါက 100 milisecond ထက်များသော အချက်အလက်များကို profile ပြုလုပ်ထားမည်ဖြစ်သည်။ 100 milisecond သည် default ဖြစ်၍ မိမိတို့ဖာသာ တခြားအချိန်ကို ထားလိုပါက ဒုတိယ parameter အနေဖြင့် အောက်ပါအတိုင်း ပြင်နိုင်သည်။
 
 	//profile anything that takes
 	//more than 1 second
 	db.setProfilingLevel(1, 1000);
 
 ## Backups and Restore ##
-Within the MongoDB `bin` folder is a `mongodump` executable. Simply executing `mongodump` will connect to localhost and backup all of your databases to a `dump` subfolder. You can type `mongodump --help` to see additional options. Common options are `--db DBNAME` to back up a specific database and `--collection COLLECTIONNAME` to back up a specific collection. You can then use the `mongorestore` executable, located in the same `bin` folder, to restore a previously made backup. Again, the `--db` and `--collection` can be specified to restore a specific database and/or collection.  `mongodump` and `mongorestore` operate on BSON, which is MongoDB's native format.
 
-For example, to back up our `learn` database to a `backup` folder, we'd execute (this is its own executable which you run in a command/terminal window, not within the mongo shell itself):
+
+MongoDB ၏ `bin` folder အတွင်းတွင် `mongodump` ဟုသော executable ပါရှိသည်။ `mongodump` ကို execute ပြုလုပ်ခြင်းဖြင့် localhost ကို connect ပြုလုပ်ပြီး database များကို `dump` ဟုသော subfolder ထဲတွင် backup ပြုလုပ်သွားမည်။ `mongodump --help` ဟုရိုက်ပြီး အခြား parameter များကိုလေ့လာနိုင်သည်။ အသုံးများသော option များမှာ `--db DBNAME` ဟု၍ မိမိတို့ အလိုရှိသော database ကိုသာ backup ပြုလုပ်ခြင်း နှင့် `--collection COLLECTIONAME` ဟု၍ မိမိတို့ စိတ်ကြိုက် collection ကို backup ပြုလုပ်ခြင်းဖြစ်သည်။ ထိုနောက် bin folder အတွင်းရှိ `mongorestore` ဟုသော executable နောက်တစ်ခုကို အသုံးပြု၍ backup ပြုလုပ်ပြီးသားကို restore ပြုလုပ်နိုင်သည်။ ထိုအပြင် `--db` နှင့် `--collection` flag များကိုအသုံးပြု၍ ရွေးချယ် restore ပြုလုပ်နိုင်သည်။
+`mongodump` နှင့် `mongorestore` တို့သည် MongoDB ၏ native format ဖြစ်သော BSON ဖြင့်အလုပ်လုပ်သည်။
+
+ဥပမာ `learn` database ကို `backup` folder အတွင်းသို့ backup ပြုလုပ်နိင်သည်။ (၎င်းသည် သီးသန့် executable ဖြစ်၍ mongo shell မှ မဟုတ်ပဲ အပြင်မှ command/terminal window မှ ခေါ်ရမည်ဖြစ်သည်) 
+
 
 	mongodump --db learn --out backup
 
-To restore only the `unicorns` collection, we could then do:
+`unicorn` collection တစ်ခုတည်းသာ restore ပြုလုပ်လိုပါက အောက်ပါအတိုင်း ရိုက်နိုင်သည်။
 
 	mongorestore --db learn --collection unicorns \
 		backup/learn/unicorns.bson
 
-It's worth pointing out that `mongoexport` and `mongoimport` are two other executables which can be used to export and import data from JSON or CSV. For example, we can get a JSON output by doing:
+ထပ်၍ မှတ်သားရန်လိုအပ်သည်မှာ `mongoexport` နှင့် `mongoimport` ဟုသော executable နှစ်ခုလည်းရှိသေးပြီး ၎င်းတို့သည် JSON သို့မဟုတ် CSV သို့ export ၊ import ပြုလုပ်ရာတွင် အသုံးပြုသည်။ ဥပမာ JSON output ကိုလိုချင်ပါက အောက်ပါအတိုင်း ပြုလုပ်နိုင်သည်။
 
 	mongoexport --db learn --collection unicorns
 
-And a CSV output by doing:
+CSV ကိုလိုချင်ပါက အောက်ပါအတိုင်းဖြစ်မည်။ 
 
 	mongoexport --db learn \
 		--collection unicorns \
 		--csv --fields name,weight,vampires
 
-Note that `mongoexport` and `mongoimport` cannot always represent your data. Only `mongodump` and `mongorestore` should ever be used for actual backups.  You can read more about [your backup options](http://docs.mongodb.org/manual/core/backups/) in the MongoDB Manual.
+သတိပြုရန်မှာ `mongoexport` နှင့် `mongoimport` သည် သင့်၏ data ကိုအမြဲတမ်း represent ပြုလုပ်နိုင်မည်မဟုတ်ပေ။ `mongodump` နှင့် `mongorestore` ကသာ တကယ့် backup အတွက် အသုံးပြုသင့်သည်။ အသေးစိတ်ကို [backup ပြုလုပ်နိုင်သည့် option](http://docs.mongodb.org/manual/core/backups/) များတွင်ဖတ်ရှုနိုင်သည်။
 
-## In This Chapter ##
-In this chapter we looked at various commands, tools and performance details of using MongoDB. We haven't touched on everything, but we've looked at some of the common ones. Indexing in MongoDB is similar to indexing with relational databases, as are many of the tools. However, with MongoDB, many of these are to the point and simple to use.
 
-# Conclusion #
-You should have enough information to start using MongoDB in a real project. There's more to MongoDB than what we've covered, but your next priority should be putting together what we've learned, and getting familiar with the driver you'll be using. The [MongoDB website](http://www.mongodb.org/) has a lot of useful information. The official [MongoDB user group](http://groups.google.com/group/mongodb-user) is a great place to ask questions.
+## ယခုအခန်းတွင် ##
 
-NoSQL was born not only out of necessity, but also out of an interest in trying new approaches. It is an acknowledgment that our field is ever-advancing and that if we don't try, and sometimes fail, we can never succeed. This, I think, is a good way to lead our professional lives.
+ယခုအခန်းတွင် MongoDB အသုံးပြုပါက လိုအပ်သော tools များနှင့် performance အကြောင်းကို လေ့လာပြီးဖြစ်သည်။ အကုန်လုံး အသေးစိတ် မထိတွေ့ခဲ့ရသော်လည်း အသုံးများသည်များကို ဖော်ပြခဲ့သည်။ MongoDB မှ indexing သည် အခြား relational database များ၏ indexing နှင့် ဆင်တူသည်ဖြစ်ပြီး တခြား tools များမှာလည်း ထိုနည်းတူပင်။ သို့သော် MongoDB ကိုအသုံးပြုပါက ၎င်းတို့ကို လွယ်ကူစွာ အသုံးပြုနိုင်သည်ကို သတိထားမိမည်ဖြစ်သည်။
+
+# နိဂုံးချုပ် #
+
+ယခုအချိန်တွင် သင့်အနေဖြင့် လက်တွေ့တွင် MongoDB ကိုစတင် အသုံးပြုနိုင်ရန် အသင့်ဖြစ်နေပြီဟု ယူဆရသည်။ ပြောခဲသည်များထက် ပိုသော အချက်များသည် MongoDB တွင်ပါရှိသော်လည်း ယခုလေ့လာထားခဲ့သည်ကို အဓိကထား၍ ပေါင်းစပ်အသုံးပြုနိုင်ရန် ကြိုးစားသင့်သည်။ [MongoDB website](http://www.mongodb.org/) တွင် အသုံးဝင်သည့် အချက်အလက်များကို ဖတ်ရှုနိုင်ပြီး တရားဝင် [MongoDB user group](http://groups.google.com/group/mongodb-user) တွင်လည်း မေးမြန်းနိုင်ပါသည်။
+
+NoSQL သည် လိုအပ်ချက်အရ ပေါ်ပေါက်လာရုံသာမက ဖြေရှင်းရန်နည်းလမ်းအသစ်များကို သယ်ဆောင်လာသည်။ ၎င်းသည် ကျွန်တော်တို့ အသက်မွေးဝမ်းကြောင်းမှုဖြစ်သည့် နည်းပညာသည် အမြဲတမ်းပြောင်းလဲနေပြီး ကျွန်တော်တို့ တခါတရံ ကျရှုံးမှုများကို လက်မခံပဲ မစမ်းသပ်ကြည့်ပါက အောင်မြင်နိုင်မည် မဟုတ်ပါ။ ထိုအချက်သည် ကျွန်တော်တို့၏ professional ဘဝများကို ဦးဆောင်နိုင်မည် အချက်ပင်ဖြစ်သည်။
