@@ -355,20 +355,21 @@ MongoDB Manual တွင်ပါရှိသည့် [Update Operators](http:/
 
 ယခုအခန်းတွင် CRUD operation များ၏ အခြေခံများကိုလေ့လာခဲ့ပြီးဖြစ်သည်။ `update` ၏ စိတ်ဝင်စားစရာကောင်းသည့် အခြေအနေ ၃ခုကို သိရှိရမည်ဖြစ်သည်။ ပထမအချက်မှာ MongoDB တွင် operator များအသုံးမပြုပဲ update ပြုလုပ်ပါက replace ဖြစ်သွားမည်ဖြစ်သည်။ ထိုကြောင့် `$set` အပါအဝင် operator များကိုအသုံးပြုရမည်ဖြစ်သည်။ ဒုတိယအနေဖြင့် `update` လုပ်ရာတွင် data ရှိမရှိ စစ်စရာမလိုတော့သည့် `upsert` option ကိုအသုံးပြုနိုင်သည်။ နောက်ဆုံးအနေဖြင့် `update` သည် မူလသဘောအရ match ဖြစ်သည့် ပထမဆုံးသော document ကိုသာ update ပြုလုပ်ပြီး အကုန်လုံးကိုပြောင်းလဲစေချင်ပါက `multi` option ကိုအသုံးပြုရသည်။
 
-# Chapter 3 - Mastering Find #
-Chapter 1 provided a superficial look at the `find` command. There's more to `find` than understanding `selectors` though. We already mentioned that the result from `find` is a `cursor`. We'll now look at exactly what this means in more detail.
+# အခန်း (၃) ကို find ကို အသေးစိတ် လေ့လာခြင်း #
 
-## Field Selection ##
-Before we jump into `cursors`, you should know that `find` takes a second optional parameter called "projection". This parameter is the list of fields we want to retrieve or exclude. For example, we can get all of the unicorns' names without getting back other fields by executing:
+အခန် (၁) တွင် `find` command ကိုအကြမ်းဖြင်းတွေ့ရမည်ဖြစ်သည်။ `selector` များတွင်သာမက `find` တွင် တခြားလေ့လာစရာများရှိပါသေးတယ်။ `find` မှရှာတွေ့သည်များကို `cursor` အနေဖြင့်ရသည်ကို ပြောပြခဲ့ပြီး ဖြစ်ပါသည်။ ယခုအခါတွင် အသေးစိတ် ဘာကိုဆိုလိုသည်ကို ဆက်သွားပါမည်။
+
+## Field များရွေးချယ်ခြင်း ##
+
+`cursor` များအကြောင်း မပြောမီ `find` သည် projection ဟုခေါ်သည့် ဒုတိယ optional parameter အကြောင်းကိုလေ့လာကြပါစို့။ ၎င်း parameter သည် မိမိတို့ အလိုရှိသည့် field များနှင့်ချန်ထားလိုသည့် field များကို သတ်မှတ်ရာတွင် အသုံးဝင်သည်။ ဥပမာ unicorn များ၏ အမည်ကိုသာ အလိုရှိပြီး ကျန်သည့် field များကိုချန်ထားလိုပါက
 
 	db.unicorns.find({}, {name: 1});
 
-By default, the `_id` field is always returned. We can explicitly exclude it by specifying `{name:1, _id: 0}`.
-
-Aside from the `_id` field, you cannot mix and match inclusion and exclusion. If you think about it, that actually makes sense. You either want to select or exclude one or more fields explicitly.
+ပုံမှန်အားဖြင့် `_id` field သည်အမြဲပါရှိမည်ဖြစ်ပြိး ၎င်းကို ချန်လှပ်လိုပါက `{name:1, _id: 0}` ဟု အသုံးပြုနိုင်သည်။ `_id` field မှအပ အခြားသော field များကိုရွေးချယ်ရာတွင် ပါချင်သည်များကို ရွေးခြင်း သို့မဟုတ် မပါချင်သည်များကို ရွေးခြင်း တစ်ခုခုကိုသာ ရွေးချယ်အသုံးပြုသင့်ပါသည်။ သင့်အနေဖြင့် fields များကို ရွေးချယ်ခြင်း သို့မဟုတ် ပယ်ထုတ်ခြင်းသည် ပို၍ ရှင်းလင်းပြီး အဓိပ္ပါယ်ရှိသည်။
 
 ## Ordering ##
-A few times now I've mentioned that `find` returns a cursor whose execution is delayed until needed. However, what you've no doubt observed from the shell is that `find` executes immediately. This is a behavior of the shell only. We can observe the true behavior of `cursors` by looking at one of the methods we can chain to `find`. The first that we'll look at is `sort`. We specify the fields we want to sort on as a JSON document, using 1 for ascending and -1 for descending. For example:
+
+`find` သည် cursor ကို return ပြန်သည်ကိုသိထားပြီးနောက် ၎င်းကို shell တွင်အသုံးပြုပါက ချက်ချင်း execute ပြုလုပ်သည်ကို တွေ့ရမည်ဖြစ်သော်လည်း ၎င်း shell ၏ behaviour တစ်ခုသာဖြစ်ပြီး `cursor` များ အလုပ်တကယ်လုပ်ပုံကိုမူ ordering ပြုလုပ်မှသာ သိနိုင်သည်။ ပထမဆုံး ကြည့်ရမည်မှာ `sort` ဖြစ်သည်။ မိမိတို့၏ JSON document အလိုက် sort ပြုလုပ်ပါက အစဉ်အတိုင်းဖြစ်လျင် 1 ပြောင်းပြန်ဆိုပါက -1 ကိုအသုံးပြုနိင်သည်။ ဥပမာ
 
 	//heaviest unicorns first
 	db.unicorns.find().sort({weight: -1})
@@ -377,10 +378,12 @@ A few times now I've mentioned that `find` returns a cursor whose execution is d
 	db.unicorns.find().sort({name: 1,
 		vampires: -1})
 
-As with a relational database, MongoDB can use an index for sorting. We'll look at indexes in more detail later on. However, you should know that MongoDB limits the size of your sort without an index. That is, if you try to sort a very large result set which can't use an index, you'll get an error. Some people see this as a limitation. In truth, I wish more databases had the capability to refuse to run unoptimized queries. (I won't turn every MongoDB drawback into a positive, but I've seen enough poorly optimized databases that I sincerely wish they had a strict-mode.)
+Relational Database ကဲ့သို့ပင် MongoDB တွင် sorting အတွက် index ကိုအသုံးပြုနိုင်သည်။ ၎င်းကို index များအကြောင်းရှင်းပြမှသာ အသေးစိတ်ပြောပါတော့မည်။ သို့သော်သိထားရမည်မှာ MongoDB သည် index မပါပါက sorting ပြုလုပ်နိုင်သော ပမာဏကို limit ပြုလုပ်ထားပါသည်။ အကယ်၍ သင့်အနေဖြင့် index မပြုလုပ်ထားသော အလွန်ကြီးမားသော collection တစ်ခုကို sort ပြုလုပ်ပါက error တက်မည်ဖြစ်သည်။ အမှန်အတိုင်းဆိုရလျင် database များသည် ၎င်းကဲ့သို့ optimize မပြုလုပ်ထားသော လျော့တိလျော့ရဲရေးထားတဲ့ query များကို တားဆီးထားသည်ကို မြင်ချင်မိပါသည်။ (MongoDB ဘက်ကို ရှေ့နေလိုက်ပေးခြင်းတော့ မဟုတ်သော်လည်း ဆိုးဆိုးရွားရွား optimize ပြုလုပ်ထားသော database များမြင်ရတိုင်း strict-mode ရှိပါစေဟု ဆုတောင်းမိသည်)
+
 
 ## Paging ##
-Paging results can be accomplished via the `limit` and `skip` cursor methods. To get the second and third heaviest unicorn, we could do:
+
+`limit` နှင့် `skip` cursor method များကို အသုံးပြု၍ paging result များကိုရယူနိုင်သည်။ ဒုတိယနှင့် တတိယ အလေးဆုံး unicorn ကိုသိလိုပါက အောက်ပါအတိုင်း ရှာယူနိုင်သည်။
 
 	db.unicorns.find()
 		.sort({weight: -1})
@@ -390,17 +393,19 @@ Paging results can be accomplished via the `limit` and `skip` cursor methods. To
 Using `limit` in conjunction with `sort`, can be a way to avoid running into problems when sorting on non-indexed fields.
 
 ## Count ##
-The shell makes it possible to execute a `count` directly on a collection, such as:
+
+Shell တွင် တိုက်ရိုက် `count` လုပ်နိုင်ပြီး ဥပမာ အနေဖြင့် အောက်ပါအတိုင်းဖြစ်သည်။
 
 	db.unicorns.count({vampires: {$gt: 50}})
 
-In reality, `count` is actually a `cursor` method, the shell simply provides a shortcut. Drivers which don't provide such a shortcut need to be executed like this (which will also work in the shell):
+လက်တွေ့တွင်မူ `count` သည် `cursor` method တစ်ခုဖြစ်ပြီး shell မှာ ၎င်း၏ shortcut အနေဖြင့် support ပြုလုပ်ထားသည်။ တချို့ support မပြုလုပ်သော driver များတွင်မူ အောက်ပါအတိုင်း ပြုလုပ်ရပါသည်။ (၎င်း နည်းလမ်းမှာ နှစ်ခုလုံးတွင် အသုံးပြု၍ရသည်။)
 
 	db.unicorns.find({vampires: {$gt: 50}})
 		.count()
 
-## In This Chapter ##
-Using `find` and `cursors` is a straightforward proposition. There are a few additional commands that we'll either cover in later chapters or which only serve edge cases, but, by now, you should be getting pretty comfortable working in the mongo shell and understanding the fundamentals of MongoDB.
+## ယခုအခန်းတွင် ##
+
+`find` နှင့် `cursor` များသည်ရိုးရိုးရှင်းရှင်းဖွဲစည်းထားသည်။ အခြား အပိုဆောင်း command များကို နောက်ပိုင်းအခန်းများတွင် ဖော်ပြသွားမည်ဖြစ်သည်။ ယခု အခြေအနေတွင် mongo shell တွင် အဆင်ပြေစွာသုံးနိုင်ရန် လေ့ကျင်ထားရန်လိုပြီး MongoDB ၏ အခြေခံကိုလည်း သိထားရန်လိုသည်။
 
 # Chapter 4 - Data Modeling #
 Let's shift gears and have a more abstract conversation about MongoDB. Explaining a few new terms and some new syntax is a trivial task. Having a conversation about modeling with a new paradigm isn't as easy. The truth is that most of us are still finding out what works and what doesn't when it comes to modeling with these new technologies. It's a conversation we can start having, but ultimately you'll have to practice and learn on real code.
