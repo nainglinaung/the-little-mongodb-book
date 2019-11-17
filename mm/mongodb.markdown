@@ -407,21 +407,26 @@ Shell တွင် တိုက်ရိုက် `count` လုပ်နို�
 
 `find` နှင့် `cursor` များသည်ရိုးရိုးရှင်းရှင်းဖွဲစည်းထားသည်။ အခြား အပိုဆောင်း command များကို နောက်ပိုင်းအခန်းများတွင် ဖော်ပြသွားမည်ဖြစ်သည်။ ယခု အခြေအနေတွင် mongo shell တွင် အဆင်ပြေစွာသုံးနိုင်ရန် လေ့ကျင်ထားရန်လိုပြီး MongoDB ၏ အခြေခံကိုလည်း သိထားရန်လိုသည်။
 
-# Chapter 4 - Data Modeling #
-Let's shift gears and have a more abstract conversation about MongoDB. Explaining a few new terms and some new syntax is a trivial task. Having a conversation about modeling with a new paradigm isn't as easy. The truth is that most of us are still finding out what works and what doesn't when it comes to modeling with these new technologies. It's a conversation we can start having, but ultimately you'll have to practice and learn on real code.
+# အခန်း (၄) - Data Modeling #
 
-Out of all NoSQL databases, document-oriented databases are probably the most similar to relational databases - at least when it comes to modeling. However, the differences that exist are important.
+နောက်ထပ် ဂီယာ ပြောင်းပြီး MongoDB အကြောင်း အကြမ်းဖြင်းဆွေးနွေးကြတာပေါ့။ အချက်အလက် အသစ်များနှင့် syntax အသစ်များကို ရှင်းပြရသည်က မခက်လှပါ။ သို့သော် နည်းပညာအသစ်ဖြင့် modeling ပြုလုပ်ရမည့် အကြောင်း ဆွေးနွေးရသည်မှာမူ မလွယ်လှပေ။ NoSQL database များအားလုံးတွင် document အခြေပြု database များမှာ relational datbase များနှင့် အနီးစပ်ဆုံးဖြစ်သော်လည်း ကွဲပြားခြားနားချက်များရှိပြီး ၎င်းတို့သည် အရေးကြီးသော အချက်များဖြစ်သည်။
 
-## No Joins ##
-The first and most fundamental difference that you'll need to get comfortable with is MongoDB's lack of joins. I don't know the specific reason why some type of join syntax isn't supported in MongoDB, but I do know that joins are generally seen as non-scalable. That is, once you start to split your data horizontally, you end up performing your joins on the client (the application server) anyway. Regardless of the reasons, the fact remains that data *is* relational, and MongoDB doesn't support joins.
+## Join မရှိ ##
 
-Without knowing anything else, to live in a join-less world, we have to do joins ourselves within our application's code. Essentially we need to issue a second query to `find` the relevant data in a second collection. Setting our data up isn't any different than declaring a foreign key in a relational database. Let's give a little less focus to our beautiful `unicorns` and a bit more time to our `employees`. The first thing we'll do is create an employee (I'm providing an explicit `_id` so that we can build coherent examples)
+
+MongoDB နှင့်အသားကျရန် လေ့လာရာတွင် အဓိကအကျဆုံး ကွာခြားချက်မှာ ၎င်းတွင် join မရှိပါ။ join ကို အဘယ်ကြောင့် support မလုပ်ခဲ့သည်ကို မသိသော်လည်း ကျွန်တော် မြင်သလောက် join သည် scale ပြုလုပ်ရန်ခက်ခဲ့သည်။ ထိုကြောင့် data များကို ဖြန့်ခွဲသိမ်းဆည်းပါက application layer တွင် ပြန်၍ join ပြုလုပ်ရသည် ထိုကြောင့် data များသည် relational *ဖြစ်မြဲ*ဖြစ်ပြီး MongoDB သည် join ကို support မပြုလုပ်သည်က အမှန်။
+
+
+တခြား ဘာမှမသိထားပဲ join မရှိသော ကမ္ဘာတွင်နေနိုင်ရန် application code တွင် ကိုယ့်ဖာသာကိုယ် join ရပါသည်။ ထိုကြောင့် ဒုတိယ query တွင် သက်ဆိုင်သော အချက်အလက်ကို collection မှ `find` နိုင်ရန် အရေးကြီးသည်။
+data ကို setting ပြုလုပ်ချင်းသည် relational database များတွင် foriegn key အသုံးပြုခြင်းနှင့် သိပ်၍ မကွာခြားလှပါ။ အရင်ဆုံး `unicorns` collection မှ ခဏခွာ၍ `employees` collection ဘက်ကိုလှည့်ပါစို့။
+ပထမဦးစွာ employee ကို create ပြုလုပ်ရန်လိုပါသည်။ (ယခု ဥပမာတွင် `_id` ကိုတမင်တကာထည့်ပေးထားသည်)
 
 	db.employees.insert({_id: ObjectId(
 		"4d85c7039ab0fd70a117d730"),
 		name: 'Leto'})
 
-Now let's add a couple employees and set their manager as `Leto`:
+
+ထိုနောက် တခြား employee များကိုလည်း ထပ်ဖြည့်ပြီး ၎င်း၏ manager ကို `Leto` ဟုထားလိုက်ပါ။
 
 	db.employees.insert({_id: ObjectId(
 		"4d85c7039ab0fd70a117d731"),
@@ -434,18 +439,19 @@ Now let's add a couple employees and set their manager as `Leto`:
 		manager: ObjectId(
 		"4d85c7039ab0fd70a117d730")});
 
+(မှတ်ထားရန်တစ်ခုမှာ `_id` သည် unique ဖြစ်သည့် value တစ်ခုခုဖြစ်လျင်ရသည်။ သင့်အနေဖြင့် လက်တွေ့တွင် `ObjectId` ဟု အသုံးပြုရသည် အခါမျိုးလည်းရှိမည်ဖြစ်သဖြင့် တခါတည်း စမ်းကြည့်ပါ။)
 
-(It's worth repeating that the `_id` can be any unique value. Since you'd likely use an `ObjectId` in real life, we'll use them here as well.)
-
-Of course, to find all of Leto's employees, one simply executes:
+Leto ၏ အလုပ်သမားများ အားလုံးကို လိုအပ်ပါက အောက်ပါအတိုင်း execute ပြုလုပ်နိုင်သည်။
 
 	db.employees.find({manager: ObjectId(
 		"4d85c7039ab0fd70a117d730")})
 
-There's nothing magical here. In the worst cases, most of the time, the lack of join will merely require an extra query (likely indexed).
+ဘာမှထူးခြားသည်တော့ မဟုတ် ၊ အဆိုးဆုံးသော အနေဖြင့် အချိန်တော်တော်များများတွင် join မရှိသဖြင့် query တကြောင်းပိုရေးရမည်ဖြစ်သည်။ 
+
 
 ## Arrays and Embedded Documents ##
-Just because MongoDB doesn't have joins doesn't mean it doesn't have a few tricks up its sleeve. Remember when we saw that MongoDB supports arrays as first class objects of a document? It turns out that this is incredibly handy when dealing with many-to-one or many-to-many relationships. As a simple example, if an employee could have two managers, we could simply store these in an array:
+
+MongoDB တွင် join မရှိသဖြင့် ၎င်းတွင် trick များမရှိသည် မဟုတ်။ MongoDB တွင် array များကို first class အနေဖြင့် support ပြုလုပ်သဖြင့် ၎င်းသည် many-to-one နှင့် many-to-many relationship များကို ကိုင်တွယ်ရာတွင် အသုံးဝင်သည်။ ဥပမာ အနေဖြင့် manager နှစ်ယောက်ရှိသော employee အတွက် အောက်ပါအတိုင်း array အတွင်းထည့်သွင်းနိုင်သည်။
 
 	db.employees.insert({_id: ObjectId(
 		"4d85c7039ab0fd70a117d733"),
@@ -455,14 +461,14 @@ Just because MongoDB doesn't have joins doesn't mean it doesn't have a few trick
 		ObjectId(
 		"4d85c7039ab0fd70a117d732")] })
 
-Of particular interest is that, for some documents, `manager` can be a scalar value, while for others it can be an array. Our original `find` query will work for both:
+စိတ်ဝင်စားစရာကောင်းသည်မှာ အချို့သော document များတွင် `manager` သည် scaler ဖြစ်လျင်ဖြစ်ပြီးတချို့အတွက် array ဖြစ်ပါလိမ့်မည်။ မူလ find query သည်နှစ်ခုစလုံးအတွက် အလုပ်လုပ်မည်ဖြစ်သည်။
 
 	db.employees.find({manager: ObjectId(
 		"4d85c7039ab0fd70a117d730")})
 
-You'll quickly find that arrays of values are much more convenient to deal with than many-to-many join-tables.
+value array မှာ many-to-many join table များထက်ပို၍ အသုံးပြုရအဆင်ပြေသည်ကို သတိထားမိမည်ဖြစ်သည်။
 
-Besides arrays, MongoDB also supports embedded documents. Go ahead and try inserting a document with a nested document, such as:
+Array များအပြင် MongoDB သည် document အတွင်း document များအဖြစ်အသုံးပြုနိုင်သည်။ အောက်ပါ nested document ကို insert ပြုလုပ်ကြည့်ပါ။
 
 	db.employees.insert({_id: ObjectId(
 		"4d85c7039ab0fd70a117d734"),
@@ -472,14 +478,14 @@ Besides arrays, MongoDB also supports embedded documents. Go ahead and try inser
 			brother: ObjectId(
 		"4d85c7039ab0fd70a117d730")}})
 
-In case you are wondering, embedded documents can be queried using a dot-notation:
+ဘယ်လိုပြန်ရှာရမည် စဉ်းစားနေပါက embedded document များသည် dot-notation ဖြင့်ရှာနိုင်သည်။
 
 	db.employees.find({
 		'family.mother': 'Chani'})
 
-We'll briefly talk about where embedded documents fit and how you should use them.
+embedded doument များကို မည်ကဲ့သို အသုံးဝင်သည်နှင့် မည့်သို အသုံးပြုရမည်ကို အကြမ်းဖြင်းရှင်းပြပါမည်။
 
-Combining the two concepts, we can even embed arrays of documents:
+ထို concept နှစ်ခုကို ပေါင်းစပ်၍ embedded ပြုလုပ်ထားသော documents array ကိုအသုံးပြုနိုင်သည်။
 
 	db.employees.insert({_id: ObjectId(
 		"4d85c7039ab0fd70a117d735"),
@@ -490,16 +496,19 @@ Combining the two concepts, we can even embed arrays of documents:
 
 
 ## Denormalization ##
-Yet another alternative to using joins is to denormalize your data. Historically, denormalization was reserved for performance-sensitive code, or when data should be snapshotted (like in an audit log). However, with the ever-growing popularity of NoSQL, many of which don't have joins, denormalization as part of normal modeling is becoming increasingly common. This doesn't mean you should duplicate every piece of information in every document. However, rather than letting fear of duplicate data drive your design decisions, consider modeling your data based on what information belongs to what document.
 
-For example, say you are writing a forum application. The traditional way to associate a specific `user` with a `post` is via a `userid` column within `posts`. With such a model, you can't display `posts` without retrieving (joining to) `users`. A possible alternative is simply to store the `name` as well as the `userid` with each `post`. You could even do so with an embedded document, like `user: {id: ObjectId('Something'), name: 'Leto'}`. Yes, if you let users change their name, you may have to update each document (which is one multi-update).
+Join အစားပြုလုပ်နိုင်သည့် နည်းလမ်းတစ်ခုမှာ data များကို denormalize ပြုလုပ်ခြင်းဖြစ်သည်။ တောက်လျှောက် denormalize ပြုလုပ်ရသည့်ရည်ရွယ်ချက်မှာ performance ပိုမိုကောင်းမွန်ရန်နှင့် snapshot (audit log ကဲ့သို့) ပြုလုပ်နိုင်ရန်ဖြစ်သည်။ သို့သော် NoSQL ကျော်ကြားလာသည်အမျှ join မရှိသည်က များသဖြင့် Modeling ပြုလုပ်ရာတွင် denormalize ပြုလုပ်လာသည်က ပုံမှန်လိုဖြစ်လာသည်။ သို့သော် ရှိသမျှ အချက်အလက်တို်းကို duplicate ပြုလုပ်ရမည်ဟု မဆိုလိုပါ။ သို့သော် duplicate ဖြစ်မှုကို ကြောက်နေမည့်အစား document ကိုကြည့်၍ လိုအပ်သလို model ပြုလုပ်ရမည်ဖြစ်သည်။
 
-Adjusting to this kind of approach won't come easy to some. In a lot of cases it won't even make sense to do this. Don't be afraid to experiment with this approach though. It's not only suitable in some circumstances, but it can also be the best way to do it.
+အကယ်၍ forum application တစ်ခုရေးသည် ဆိုပါစို့။ ထုံတမ်းစဉ်လာအရဆိုလျင် `user` တစ်ယောက်၏ `post` သည် `posts` table အတွင်းရှိ `userid` အနေဖြင့် တည်ရှိနေမည်ဖြစ်သည်။ ထို Model အရဆိုပါက `user` ဖြင့် မ join ပဲ `post` ကိုထုတ်ပြနိုင်မည် မဟုတ်ပေ။ တခြား နည်းလမ်းတစ်ခုမှာ `name` အပြင် `userid` တို့ကို `post` တိုင်းတွင် store ပြုလုပ်ရမည်ဖြစ်သည်။ Embedded document တွင်မူ `user: {id: ObjectId('Something'), name: 'Leto'}` ဟု၍ ထပ်ဆင့် သိမ်းထားနိုင်သည်။ အကယ်၍ user များက ၎င်း၏ အမည်ကိုပြောင်းလဲပါက document တိုင်းကို update ပြုလုပ်ရမည်ဖြစ်မည်။(multi-update ကိုအသုံးပြုရမည်။)
+
+ထိုကဲ့သို approach ကိုပြောင်းလဲရသည်မှာ လွယ်ကူလှသည်တော့မဟုတ်။ တခြားသို့သော အခြေအနေများမှာ မှားနေသည်ဟု ခံစားရမည်ဖြစ်သည်။ သို့သော် ထို approach ကိုစမ်းသပ်ကြည့်ရန် မကြောက်ရွံ့ပါနှင့်။ အချို့သော အခြေအနေများအတွက် အဆင်ပြေရုံသာမက အကောင်းဆုံးဖြေရှင်းနည်းပါ ဖြစ်ချင်ဖြစ်တက်ပါသည်။
 
 ## Which Should You Choose? ##
-Arrays of ids can be a useful strategy when dealing with one-to-many or many-to-many scenarios. But more commonly, new developers are left deciding between using embedded documents versus doing "manual" referencing.
 
-First, you should know that an individual document is currently limited to 16 megabytes in size. Knowing that documents have a size limit, though quite generous, gives you some idea of how they are intended to be used. At this point, it seems like most developers lean heavily on manual references for most of their relationships. Embedded documents are frequently leveraged, but mostly for smaller pieces of data which we want to always pull with the parent document. A real world example may be to store an `addresses` documents with each user, something like:
+id array များသည် one-to-many နှင့် many-to-many  အခြေအနေများတွင် အသုံးဝင်သော ဖြေရှင်းနည်းဖြစ်သည်။ များသောအားဖြင့် developer များသည် ထိုကဲ့သို့ manual reference ပြုလုပ်ခြင်းထက် embedded documents များကို ပို၍ အသုံးပြုကြသည်။
+
+ပထမဦးစွာ သိထားရမည်မှာ document တစ်ခုသည် 16megabyes သာခွင့်ပြုမည်ဖြစ်သည်။  document များမှာ size limit ရှိသဖြင့် ၎င်းတို့ကို မည်သို့ အသုံးပြုရမည်ကို အကြမ်းဖြင့်ခန့်မှန်း၍ရသည်။ ထိုအခြေအနေတွင် developer အတော်များများသည် relationship တော်တော်များများကို manual reference ပြုလုပ်ကြသည်။ အချို့သော အခြေအနေများတွင်မူ embedded documents များကို အသုံးပြုကြသော်လည်း data size သေးငယ်သည်များကို အများအားဖြင့် parent document မှ 
+ထည့်ထားချင်သည့် အခါတွင်သုံးသည်။ လက်တွေ့ ဥပမာအနေဖြင့် user တစ်ဦးချင်း၏ `addresses` document များကိုအောက်ပါအတိုင်း ထည့်သွင်းသည်ကို တွေ့ရမည်။
 
 	db.users.insert({name: 'leto',
 		email: 'leto@dune.gov',
@@ -508,17 +517,22 @@ First, you should know that an individual document is currently limited to 16 me
 		           {street: "555 University",
 		            city: "Palo Alto", state:"CA",zip:"94107"}]})
 
-This doesn't mean you should underestimate the power of embedded documents or write them off as something of minor utility. Having your data model map directly to your objects makes things a lot simpler and often removes the need to join. This is especially true when you consider that MongoDB lets you query and index fields of an embedded documents and arrays.
+သို့သော်လည်း embedded document များကို minor data များကို ထည့်သွင်းရန် သို့မဟုတ် သိပ်အသုံးမဝင်ဟု ဆိုလိုခြင်းမဟုတ်ပါ။ data model မှ object သို့ တိုက်ရိုက်ဆက်စပ်ခြင်းသည် တချို့အရာများအတွက် အတော်ရိုးရှင်းသွားကာ join ပြုလုပ်ရန်လိုအပ်ခြင်းမှ အတော်နည်းပါးသွားပြီး အထူးသဖြင့် MongoDB တွင် embedded documents နှင့် array များကို index ပြုလုပ်နိုင်ခြင်းကြောင့်လည်း ပါဝင်သည်။
 
-## Few or Many Collections ##
-Given that collections don't enforce any schema, it's entirely possible to build a system using a single collection with a mishmash of documents but it would be a very bad idea.  Most MongoDB systems are laid out somewhat similarly to what you'd find in a relational system, though with fewer collections. In other words, if it would be a table in a relational database, there's a chance it'll be a collection in MongoDB (many-to-many join tables being an important exception as well as tables that exist only to enable one to many relationships with simple entities).
+## Collection အနည်းအများ ##
 
-The conversation gets even more interesting when you consider embedded documents. The example that frequently comes up is a blog. Should you have a `posts` collection and a `comments` collection, or should each `post` have an array of `comments` embedded within it? Setting aside the 16MB document size limit for the time being (all of *Hamlet* is less than 200KB, so just how popular is your blog?), most developers should prefer to separate things out. It's simply cleaner, gives you better performance and more explicit.  MongoDB's flexible schema allows you to combine the two approaches by keeping comments in their own collection but embedding a few comments (maybe the first few) in the blog post to be able to display them with the post.  This follows the principle of keeping together data that you want to get back in one query.
 
-There's no hard rule (well, aside from 16MB). Play with different approaches and you'll get a sense of what does and does not feel right.
+Collection များမှာ schema များကို enforce မပြုလုပ်သော်လည်း collection တစ်ခုထဲမှ အမျိုးစုံ document များ ဗျောက်သောက် ပစ်ထည့်သည် စနစ်ကို တည်ဆောက်သည်က ရှိနိုင်သေးပြီး ၎င်းမှာ အတော် အခြေအနေဆိုးသည့် လုပ်ရပ်ဖြစ်သည်။ 
+MongoDB systems များသည် relational system များတွင်တွေ့ရှိရမည်နှင့် ဆင်တင်တင်ဖြစ်ပြီး collections များမှာ ပို၍နည်းနိုင်သည်။ တနည်းအားဖြင့် relational database မှ table တစ်ခုသည် MongoDB တွင် collection တစ်ခုဖြစ်နိုင်သည်။ (Many to many join table နှင့် One to Many join table များမှာမူ ထိုဥပမာထဲမပါဝင်ပါ။)
 
-## In This Chapter ##
-Our goal in this chapter was to provide some helpful guidelines for modeling your data in MongoDB, a starting point, if you will. Modeling in a document-oriented system is different, but not too different, than in a relational world. You have more flexibility and one constraint, but for a new system, things tend to fit quite nicely. The only way you can go wrong is by not trying.
+embedded documents များနှင့် ဆက်စပ်စဉ်းစားပါက ပို၍စိတ်ဝင်စားစရာကောင်းလာပါသည်။ အများစုရင်းနှီးကြမည့် ဥပမာမှာ blog ဖြစ်သည်။ `posts` နှင့် `comments` များသည် သီးသန့် collection အဖြင့်ရှိသင့်ပါသလား `post` တစ်ခုတိုင်းတွင် `comment` များသည် array အနေဖြင့်ရှိသင့်ပါသလား။ 16MB document size limit ကိုခဏမေ့ထား၍ (Sheakspear ၏ ဝတ္ထုတစ်အုပ်လုံး၏ text size သည်ပင် 200kb သာရှိသည်) developers အများစုသည် ခွဲရေးကို ပိုသဘောကျကြသည်။ ၎င်းသည် ပို၍ရှင်းလင်းပြီး performance အနေဖြင့် ပိုကောင်းသည်။ MongoDB ၏ flexible ဖြစ်သော approach ကြောင့် blog post တစ်ခုမှ comment များကို  တချို့တဝက် embedded ပြုလုပ်ပြီး (ပထမဆုံး အနည်းငယ်) ကျန်သည်များကို သီးသန်းသိမ်းဆည်းသည့် ပုံစံမျိုးကို အသုံးပြုနိုင်သည်။ ထိုသို့ဖြင့် data များကို အလိုရှိပါက query တစ်ခုတည်းဖြင့် ယူနိုင်သည့် စည်းကမ်းကို လိုက်နာရာကြသည်။
+
+16MB limit မှလွဲ၍ တင်းကျပ်ထားသော စည်းကမ်းမရှိပါ။ မျိုးစုံ စမ်းသပ်ကြည့်ပါ မည်သည်က ပို၍ အဆင်ပြေသည် မပြေသည်ကို တွေ့လာရပါမည်။
+
+## ယခုအခန်းတွင် ##
+
+ဒီအခန်း၏ အဓိကရည်ရွယ်ချက်မှာ MongoDB တွင် data modeling ပြုလုပ်ရာတွင် အသုံးဝင်သည့် guideline များကို ညွန်ပြခြင်းဖြစ်သည်။ Document အခြေပြုစနစ်တွင် Modeling ပြုလုပ်ရာတွင် Relational World နှင့် ကွဲပြားသောလည်း အရမ်း မခြားနားလှပါ။ ပို၍ flexible ဖြစ်ပြီး constraint အနည်းငယ်မျှသာရှိပြီး စနစ်အသစ်များအတွက်မူ ပို၍ အဆင်ပြေလေ့ရှိသည်။ 
+
 
 # အခန်း (၅)  - MongoDB ကိုဘယ်အချိန်မှာ အသုံးပြုမလဲ #
 
