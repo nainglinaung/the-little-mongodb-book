@@ -1,6 +1,4 @@
 # Output books
 
-*.pdf
-*.epub
-*.mobi
+
 .DS_Store
